@@ -4,7 +4,7 @@ const corPrincipal = '#fc7303'
 const corSecundaria = '#29292E'
 const corBorda = '#CCC'
 const corTexto = '#222'
-const corTitulo = '#a1a1a1'
+const corTitulo = '#dfdfdf'
 const corBranco = '#fff'
 
 const meusEstilos = StyleSheet.create({
@@ -20,7 +20,7 @@ const meusEstilos = StyleSheet.create({
         paddingTop: '2%',
     },
     botao: {
-        backgroundColor: corPrincipal,
+        backgroundColor: corBranco,
         borderRadius: 4,
         paddingVertical: 8,
         width: '100%',
@@ -30,7 +30,7 @@ const meusEstilos = StyleSheet.create({
     },
     textoBotao: {
         fontSize: 18,
-        color: corBranco,
+        color: corSecundaria,
         fontWeight: 'bold'
     },
     inputPesquisa: {

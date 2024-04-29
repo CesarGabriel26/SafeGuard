@@ -21,17 +21,6 @@ const Login = ({ navigation }) => {
                 <Text style={styles.headerText}>Bem-vindo(a) </Text>
             </Animar.View>
             <Animar.View animation={'fadeInUp'} style={meusEstilos.conteudoCorpo}>
-
-                <Text style={styles.label}> Tipo acesso:</Text>
-                <View style={styles.picker}>
-                    <Picker
-                        selectedValue={tipoAcesso}
-                        onValueChange={setTipoAcesso}
-                    >
-                        <Picker.Item label="Vendedor" value="vendedor" />
-                        <Picker.Item label="Gerente" value="gerente" />
-                    </Picker>
-                </View>
                 <Text style={styles.label}> Usuario:</Text>
                 <TextInput
                     placeholder="Digite seu usuario..."
@@ -50,8 +39,8 @@ const Login = ({ navigation }) => {
 
                 <Text>{MensagemLogin}</Text>
 
-                <TouchableOpacity style={meusEstilos.botao} onPress={() => navigation.navigate('BottomNav')}>
-                    <Text style={meusEstilos.textoBotao}> Acessar </Text>
+                <TouchableOpacity style={[meusEstilos.botao, {backgroundColor : corPrincipal}]} onPress={() => navigation.navigate('BottomNav')}>
+                    <Text style={[meusEstilos.textoBotao, {color: corBranco}]}> Acessar </Text>
                 </TouchableOpacity>
             </Animar.View>
         </ImageBackground>
@@ -63,7 +52,9 @@ const styles = StyleSheet.create({
         marginTop: '14%',
         marginBottom: '8%',
         paddingStart: '5%',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent:'center',
+        alignItems: 'center'
     },
     headerText: {
         fontSize: 28,

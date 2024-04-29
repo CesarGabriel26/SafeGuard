@@ -3,7 +3,7 @@ create database SafeGuardPro;
 use SafeGuardPro;
 
 create table EPIs(
-	id_epi int primary key auto_increment,
+	id int primary key auto_increment,
     nome_epi varchar(100) not null,
     validade int not null,
     descricao varchar(300) not null,
@@ -12,7 +12,7 @@ create table EPIs(
 );
 
 create table colaboradores(
-	id_colaborador int primary key auto_increment,
+	id int primary key auto_increment,
     nome varchar(100) not null,
     email varchar(50) not null,
     senha varchar(30) not null,
@@ -28,21 +28,21 @@ create table colaboradores(
 );
 
 create table notificacoes(
-	id_notificacao int primary key auto_increment,
+	id int primary key auto_increment,
     descricao varchar(500) not null,
 	id_colaboradores int,
     id_epi int
 );
 
 create table colaborador_EPIs(
-	id_colaborador int primary key auto_increment,
-    id_EPIs int,
-    id_colaborador_supervisor int,
+	id_colaborador int NOT NULL,
+    id_EPIs int NOT NULL,
+    id_colaborador_supervisor int NOT NULL,
     data_EPI date not null,
     data_vencimento date not null
 );
 
-insert into EPIs (nome_epi, validade, descricao, categoria, foto) value ('óculos', 10/12/2020, 'óculos de proteção que não queima teus olhisnhos', 'Óculos de proteção para risco biológico', 'https://images.tcdn.com.br/img/img_prod/916304/oculos_de_protecao_individual_epi_6921_1_ceac46bb3f7763c1ae802b0a43eaac09.jpg');
+insert into EPIs (nome_epi, validade, descricao, categoria, foto) value ('óculos', 10-12-2020, 'óculos de proteção que não queima teus olhisnhos', 'Óculos de proteção para risco biológico', 'https://images.tcdn.com.br/img/img_prod/916304/oculos_de_protecao_individual_epi_6921_1_ceac46bb3f7763c1ae802b0a43eaac09.jpg');
 
 insert into colaboradores (nome, email, senha, setor, cpf, cargo, cep, endereco, nr, bairro, cidade, estado) value ('Carlos', 'CarlosDaniel@gmail.com', 10122233, 'administração', 46832494668, 'diretor', 106220145, 'espiritu santo', 28, 'alvares cabral', 'andradina', 'sao paulo');
 

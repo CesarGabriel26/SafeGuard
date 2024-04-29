@@ -1,9 +1,18 @@
 import decimal
-from flask import Blueprint
+from flask import Blueprint, jsonify, request
 from conexao import criar_conexao, fechar_conexao
 
 colaboradores_bp = Blueprint('/colaboradores', __name__)
-dados_necessarios = ["id_colaborador", "nome", "email", "senha", "setor", "cpf", "cargo", "cep", "endereco", "nr", "bairro", "cidade", "estado"]
+
+dados_necessarios = [
+    "id_colaborador", 
+    "nome", "email", 
+    "senha", "setor", 
+    "cpf", "cargo",
+    "cep", "endereco",
+    "nr", "bairro", 
+    "cidade", "estado"
+]
 
 def CheckValueNotIn(keys = [], obj = {}):
     for i in keys:
@@ -22,7 +31,7 @@ def cadastrarColaborador():
     cursor = conexao.cursor()
 
     try:
-        comando = 'INSERT INTO colaboradores (id_colaborador, nome, email, senha, setor, cpf, cargo, cep, endereco, nr, bairro, cidade, estado) VALUES (%s, %s, %s)'
+        comando = 'INSERT INTO colaboradores (id_colaborador, nome, email, senha, setor, cpf, cargo, cep, endereco, nr, bairro, cidade, estado) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(comando, (novoColaboradores['nome'],
                                 novoColaboradores['email'], 
                                 novoColaboradores['senha'], 

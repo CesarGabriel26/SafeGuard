@@ -3,7 +3,7 @@ from flask import Blueprint
 from conexao import criar_conexao, fechar_conexao
 
 colaboradores_EPIs_bp = Blueprint('/colaboradores_EPIs', __name__)
-dados_necessarios = ["id_colaborador", "nome", "email", "senha", "setor", "cpf", "cargo", "cep", "endereco", "nr", "bairro", "cidade", "estado"]
+dados_necessarios = ["id_epi", "nome_epi", "validade", "descricao", "categoria", "foto"]
 
 def CheckValueNotIn(keys = [], obj = {}):
     for i in keys:
@@ -11,11 +11,11 @@ def CheckValueNotIn(keys = [], obj = {}):
             return True
     return False
 
-@colaboradores_EPIs_bp.route('/cadastrarColaborador', methods=['POST'])
-def cadastrarColaborador():
-    novoColaborador = request.get_json()
+@colaboradores_EPIs_bp.route('/cadastrarColaborador_EPIs', methods=['POST'])
+def cadastrarColaborador_EPIs():
+    novoColaborador_EPIs = request.get_json()
     
-    if CheckValueNotIn(dados_necessarios,novoColaborador):
+    if CheckValueNotIn(dados_necessarios,novoColaborador_EPIs):
         return jsonify({'status': 'error', "message": 'dados imcompletos'}), 400
     
     conexao = criar_conexao()
@@ -55,8 +55,8 @@ def obterColaboradores_EPIs():
     cursor.execute("SELECT * FROM colaboradores_EPIs")
     colaboradores_EPIs = cursor.fetchall()
 
-    for colaborador in colaboradores_EPIs:
-        for chave, valor in colaborador.items():
+    for colaborador_EPIs in colaboradores_EPIs:
+        for chave, valor in colaborador_EPIs.items():
             if isinstance(valor, decimal.Decimal):
                 colaboradores_EPIs[chave] = float(valor)
 
@@ -76,10 +76,10 @@ def buscarColaboradores_EPIs(nome):
 
     colaboradores_EPIs = cursor.fetchall()
 
-    for colaborador in colaboradores_EPIs:
-        for chave, valor in colaborador.items():
+    for colaborador_EPIs in colaboradores_EPIs:
+        for chave, valor in colaborador_EPIs.items():
             if isinstance(valor, decimal.Decimal):
-                colaborador[chave] = float(valor)
+                colaborador_EPIs[chave] = float(valor)
 
     
     cursor.close()
@@ -87,8 +87,8 @@ def buscarColaboradores_EPIs(nome):
 
     return jsonify(colaboradores_EPIs)
 
-@colaboradores_EPIs_bp.route('/alterarColaborador/<int:id>', methods=['PUT'])
-def alterarColaborador(id):
+@colaboradores_EPIs_bp.route('/alterarcolaborador_EPIs/<int:id>', methods=['PUT'])
+def alterarcolaborador_EPIs(id):
     conexao = criar_conexao()
     cursor = conexao.cursor(dictionary=True)
 
@@ -106,12 +106,12 @@ def alterarColaborador(id):
         if not campos_para_atualizar:
             return jsonify({'status': 'error', 'message': 'Nenhum campo fornecido para atuaização'}), 400
         
-        comando = "UPDATE colaboradores_EPIs SET "+",".join(campos_para_atualizar) + "WHERE id_colaborador = %s"
+        comando = "UPDATE colaboradores_EPIs SET "+",".join(campos_para_atualizar) + "WHERE id_epi = %s"
         valores = valores_para_atualizar + [id]
         cursor.execute(comando,valores)
         conexao.commit()
 
-        status = {'status': 'success', 'message': 'Colaborador atualizado com sucesso'}
+        status = {'status': 'success', 'message': 'colaborador_EPIs atualizado com sucesso'}
         return jsonify(status)
     except Exception as e:
         conexao.rollback()
@@ -122,21 +122,21 @@ def alterarColaborador(id):
         fechar_conexao(conexao)
 
 
-@colaboradores_EPIs_bp.route('/apagarColaborador/<int:id>', methods=['DELETE'])
-def deletarColaborador(id):
+@colaboradores_EPIs_bp.route('/apagarcolaborador_EPIs/<int:id>', methods=['DELETE'])
+def deletarcolaborador_EPIs(id):
     conexao = criar_conexao()
     cursor =  conexao.cursor()
 
-    colaborador_existe = cursor.execute("SELECT COUNT(*) FROM colaboradores_EPIs WHERE id_colaborador = %s", (id,))
+    colaborador_EPIs_existe = cursor.execute("SELECT COUNT(*) FROM colaboradores_EPIs WHERE id_epi = %s", (id,))
 
-    if colaborador_existe == 0:
-        return jsonify({'status': 'error', 'message': 'Colaborador não encontrado'}), 404
+    if colaborador_EPIs_existe == 0:
+        return jsonify({'status': 'error', 'message': 'id_epi não encontrado'}), 404
     
     try:
-        comando = 'DELETE FROM colaboradores_EPIs WHERE id_colaborador = %s'
+        comando = 'DELETE FROM colaboradores_EPIs WHERE id_epi = %s'
         cursor.execute(comando, (id,))
         conexao.commit()
-        status = {'status': 'success', 'message': 'Colaborador deletado com sucesso'}
+        status = {'status': 'success', 'message': 'id_epi deletado com sucesso'}
         return jsonify(status)
     except Exception as e:
         conexao.rollback()

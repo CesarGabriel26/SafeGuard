@@ -2,10 +2,10 @@ import decimal
 from flask import Blueprint, jsonify, request
 from conexao import criar_conexao, fechar_conexao
 
-colaboradores_bp = Blueprint('colaboradores', __name__)
+colaborador_EPIs_bp = Blueprint('colaboradores', __name__)
 dados_necessarios = ["id_colaborador", "id_EPIs", "id_colaborador_supervisor", "data_EPI", "data_vencimento"]
 
-@colaboradores_bp.route('/cadastro', methods=['POST'])
+@colaborador_EPIs_bp.route('/cadastro', methods=['POST'])
 def cadastrarColaboradores():
     novoColaboradores = request.get_json()
 
@@ -30,7 +30,7 @@ def cadastrarColaboradores():
         fechar_conexao(conexao)
 
 
-@colaboradores_bp.route('/obterColaboradores', methods=['GET'])
+@colaborador_EPIs_bp.route('/obterColaboradores', methods=['GET'])
 def obterColaboradores():
     conexao = criar_conexao()
     cursor = conexao.cursor(dictionary=True)
@@ -48,7 +48,7 @@ def obterColaboradores():
 
     return jsonify(Colaboradores)
 
-@colaboradores_bp.route('/buscarColaboradores/<string:id_colaborador', methods=['GET'])
+@colaborador_EPIs_bp.route('/buscarColaboradores/<string:id_colaborador', methods=['GET'])
 def buscarColaboradores(id_colaborador):
     conexao = criar_conexao()
     cursor = conexao.cursor(dictionary=True)
@@ -70,7 +70,7 @@ def buscarColaboradores(id_colaborador):
 
     return jsonify(Colaboradores)
 
-@colaboradores_bp.route('/alterarColaborador/<int:id>', methods=['PUT'])
+@colaborador_EPIs_bp.route('/alterarColaborador/<int:id>', methods=['PUT'])
 def alterarColaborador(id):
     conexao = criar_conexao()
     cursor = conexao.cursor(dictionary=True)
@@ -119,7 +119,7 @@ def alterarColaborador(id):
         fechar_conexao(conexao)
 
 
-@colaboradores_bp.route('/apagarColaborador/<int:id>', methods=['DELETE'])
+@colaborador_EPIs_bp.route('/apagarColaborador/<int:id>', methods=['DELETE'])
 def deletarColaborador(id):
     conexao = criar_conexao()
     cursor =  conexao.cursor()

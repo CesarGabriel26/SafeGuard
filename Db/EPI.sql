@@ -48,7 +48,7 @@ insert into colaboradores (nome, email, senha, setor, cpf, cargo, cep, endereco,
 
 insert into notificacoes (descricao) value ('notificação');
 
-insert into colaborador_EPIs (data_EPI, data_vencimento) value ('2026-10-28', '2020-8-03');
+insert into colaborador_EPIs (id_colaborador, id_EPIs, id_colaborador_supervisor, data_EPI, data_vencimento) value (1,1,2, '2026-10-28', '2020-8-03');
 
 select * from EPIs;
 

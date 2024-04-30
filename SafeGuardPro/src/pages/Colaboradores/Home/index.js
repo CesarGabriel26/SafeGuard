@@ -12,7 +12,9 @@ const Home = ({ navigation }) => {
             </View>
             <View style={{ flexDirection: "row" }}>
                 <Text style={styles.texto}> EPI’s vinculadas 3 </Text>  
-                <TouchableOpacity style={{ fontSize: 14, fontWeight: 'bold', marginTop: 15, marginLeft: 100, }}> Ver mais </TouchableOpacity>  
+                <TouchableOpacity style={{ fontSize: 14, fontWeight: 'bold', marginTop: 15, marginLeft: 100, }}> 
+                    <Text>Ver mais</Text> 
+                </TouchableOpacity>  
             </View>
             <View style={styles.apresentacaoPrincipal}>
                 <Text style={styles.apresentacao} > Nome EPI </Text>

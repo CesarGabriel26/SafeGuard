@@ -5,13 +5,18 @@ from conexao import criar_conexao, fechar_conexao
 colaboradores_bp = Blueprint('/colaboradores', __name__)
 
 dados_necessarios = [
-    "id_colaborador", 
-    "nome", "email", 
-    "senha", "setor", 
-    "cpf", "cargo",
-    "cep", "endereco",
-    "nr", "bairro", 
-    "cidade", "estado"
+    "bairro",
+    "cargo",
+    "cep",
+    "cidade",
+    "cpf",
+    "email",
+    "endereco",
+    "estado",
+    "nome",
+    "nr",
+    "senha",
+    "setor",
 ]
 
 def CheckValueNotIn(keys = [], obj = {}):
@@ -50,7 +55,7 @@ def buscarColaboradoresNome(nome):
     return jsonify(colaboradores)
 
 @colaboradores_bp.route('/obter/<int:id>', methods=['GET'])
-def buscarColaboradoresId(id):
+def buscarColaboradorId(id):
     conexao = criar_conexao()
     cursor = conexao.cursor(dictionary=True)
 
@@ -64,3 +69,109 @@ def buscarColaboradoresId(id):
     
     return jsonify(cliente)
 
+@colaboradores_bp.route('/cadastrar', methods=['POST'])
+def cadastrarColaborador():
+    novoColaborador = request.get_json()
+    
+    if CheckValueNotIn(dados_necessarios,novoColaborador):
+        return jsonify({'status': 'error', "message": 'dados imcompletos'}), 400
+    
+    conexao = criar_conexao()
+    cursor = conexao.cursor()
+
+    try:
+        campos = []
+        keys = []
+        valores = []
+        
+        
+        for dado in novoColaborador:
+            campos.append(dado)
+            valores.append(f'%s')
+            keys.append(novoColaborador[dado])
+
+      
+        if not campos:
+            return jsonify({'status': 'error', 'message': 'Nenhum campo fornecido para atuaização'}), 400
+        
+        comando = f'INSERT INTO colaboradores ({",".join(campos)}) VALUES ({",".join(valores)})'
+        cursor.execute(comando, keys)
+        
+        conexao.commit()
+        status = {'status':'success', 'code': 201}
+        
+        return jsonify(status)
+    except Exception as e:
+        conexao.rollback()
+        status = {'status': 'error', 'message': str(e)}
+        return jsonify(status)
+    finally:
+        cursor.close()
+        fechar_conexao(conexao)
+
+@colaboradores_bp.route('/alterar/<int:id>', methods=['PUT'])
+def alterarColaborador(id):
+    conexao = criar_conexao()
+    cursor = conexao.cursor(dictionary=True)
+
+    dados = request.get_json()
+    
+    try:
+        campos_para_atualizar = []
+        valores_para_atualizar = []
+        
+        
+        for dado in dados:
+            campos_para_atualizar.append(f'{dado} = %s')
+            valores_para_atualizar.append(dados[dado])
+
+      
+        if not campos_para_atualizar:
+            return jsonify({'status': 'error', 'message': 'Nenhum campo fornecido para atuaização'}), 400
+        
+        comando = "UPDATE colaboradores SET "+",".join(campos_para_atualizar) + "WHERE id = %s"
+        
+        valores = valores_para_atualizar + [id]
+        cursor.execute(comando,valores)
+        conexao.commit()
+
+        status = {'status': 'success', 'message': 'Colaborador atualizado com sucesso'}
+        
+    except Exception as e:
+        conexao.rollback()
+        status = {'status': 'error', 'message': str(e)} 
+
+    finally:
+        cursor.close()
+        fechar_conexao(conexao)
+    
+    return jsonify(status)
+
+@colaboradores_bp.route('/deletar/<int:id>', methods=['DELETE'])
+def deletarColaborador(id):
+    conexao = criar_conexao()
+    cursor =  conexao.cursor()
+
+    colaborador_existe = cursor.execute("SELECT COUNT(*) FROM colaboradores WHERE id = %s", (id,))
+
+    if colaborador_existe == 0:
+        return jsonify({'status': 'error', 'message': 'Colaborador não encontrado'}), 404
+    
+    try:
+        comando = 'DELETE FROM colaboradores WHERE id = %s'
+        
+        cursor.execute(comando, (id,))
+        
+        conexao.commit()
+        
+        status = {'status': 'success', 'message': 'Colaborador deletado com sucesso'}
+        
+    except Exception as e:
+        conexao.rollback()
+        status = {'status': 'error', 'message': str(e)}
+    finally:
+        cursor.close()
+        conexao.close()
+    
+    return jsonify(status)
+    

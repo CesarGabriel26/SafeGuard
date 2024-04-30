@@ -8,7 +8,7 @@ const Inicio = ({navigation}) => {
         <ImageBackground source={require('../../assets/bg.png')} resizeMode="cover" style={meusEstilos.conteudoHeader}>
             <View style={styles.logo}>
                 <Animar.Image
-                    source={require('../../assets/logo.svg')}
+                    source={require('../../assets/logo.png')}
                     animation='zoomIn'
                     style={{ width: '100%' }}
                     resizeMode="contain" 

@@ -35,6 +35,7 @@ create table notificacoes(
 );
 
 create table colaborador_EPIs(
+    id int primary key auto_increment,
 	id_colaborador int NOT NULL,
     id_EPIs int NOT NULL,
     id_colaborador_supervisor int NOT NULL,
@@ -42,18 +43,18 @@ create table colaborador_EPIs(
     data_vencimento date not null
 );
 
-insert into EPIs (nome_epi, validade, descricao, categoria, foto) value ('óculos', 10-12-2020, 'óculos de proteção que não queima teus olhisnhos', 'Óculos de proteção para risco biológico', 'https://images.tcdn.com.br/img/img_prod/916304/oculos_de_protecao_individual_epi_6921_1_ceac46bb3f7763c1ae802b0a43eaac09.jpg');
+-- insert into EPIs (nome_epi, validade, descricao, categoria, foto) value ('óculos', 10-12-2020, 'óculos de proteção que não queima teus olhisnhos', 'Óculos de proteção para risco biológico', 'https://images.tcdn.com.br/img/img_prod/916304/oculos_de_protecao_individual_epi_6921_1_ceac46bb3f7763c1ae802b0a43eaac09.jpg');
 
-insert into colaboradores (nome, email, senha, setor, cpf, cargo, cep, endereco, nr, bairro, cidade, estado) value ('Carlos', 'CarlosDaniel@gmail.com', 10122233, 'administração', 46832494668, 'diretor', 106220145, 'espiritu santo', 28, 'alvares cabral', 'andradina', 'sao paulo');
+-- insert into colaboradores (nome, email, senha, setor, cpf, cargo, cep, endereco, nr, bairro, cidade, estado) value ('Carlos', 'CarlosDaniel@gmail.com', 10122233, 'administração', 46832494668, 'diretor', 106220145, 'espiritu santo', 28, 'alvares cabral', 'andradina', 'sao paulo');
 
-insert into notificacoes (descricao) value ('notificação');
+-- insert into notificacoes (descricao) value ('notificação');
 
-insert into colaborador_EPIs (id_colaborador, id_EPIs, id_colaborador_supervisor, data_EPI, data_vencimento) value (1,1,2, '2026-10-28', '2020-8-03');
+-- insert into colaborador_EPIs (id_colaborador, id_EPIs, id_colaborador_supervisor, data_EPI, data_vencimento) value (1,1,2, '2026-10-28', '2020-8-03');
 
-select * from EPIs;
+-- select * from EPIs;
 
-select * from colaboradores;
+-- select * from colaboradores;
 
-select * from notificacoes;
+-- select * from notificacoes;
 
-select * from colaborador_EPIs;
+-- select * from colaborador_EPIs;

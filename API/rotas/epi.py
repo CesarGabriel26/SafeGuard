@@ -132,9 +132,9 @@ def deletarEPI(id):
     conexao = criar_conexao()
     cursor =  conexao.cursor()
 
-    epi = cursor.execute("SELECT COUNT(*) FROM EPIs WHERE id = %s", (id,))
+    epis = cursor.execute("SELECT COUNT(*) FROM EPIs WHERE id = %s", (id,))
 
-    if epi == 0:
+    if epis == 0:
         return jsonify({'status': 'error', 'message': 'id não encontrado'}), 404
     
     try:

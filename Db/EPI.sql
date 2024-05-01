@@ -35,6 +35,7 @@ create table notificacoes(
 );
 
 create table colaborador_EPIs(
+    id int primary key auto_increment,
 	id_colaborador int NOT NULL,
     id_EPIs int NOT NULL,
     id_colaborador_supervisor int NOT NULL,

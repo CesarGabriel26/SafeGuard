@@ -2,7 +2,7 @@ import decimal
 from flask import Blueprint, jsonify, request
 from conexao import criar_conexao, fechar_conexao
 
-colaborador_EPIs_bp = Blueprint('colaboradores', __name__)
+relation_colab_epi_bp = Blueprint('colab_epi', __name__)
 dados_necessarios = ["id_colaborador", "id_EPIs", "id_colaborador_supervisor", "data_EPI", "data_vencimento"]
 
 def CheckValueNotIn(keys = [], obj = {}):
@@ -12,7 +12,7 @@ def CheckValueNotIn(keys = [], obj = {}):
     return False
 
 
-@colaborador_EPIs_bp.route('/listar', methods=['GET'])
+@relation_colab_epi_bp.route('/listar', methods=['GET'])
 def listarRelacoes():
     conexao = criar_conexao()
     cursor = conexao.cursor(dictionary=True)
@@ -25,7 +25,7 @@ def listarRelacoes():
 
     return jsonify(Colaboradores)
 
-@colaborador_EPIs_bp.route('/buscarPcolaborador/<int:id_colborador>', methods=['GET'])
+@relation_colab_epi_bp.route('/buscarPcolaborador/<int:id_colaborador>', methods=['GET'])
 def buscarRelacaoPorColaborador(id_colaborador):
     conexao = criar_conexao()
     cursor = conexao.cursor(dictionary=True)
@@ -41,8 +41,8 @@ def buscarRelacaoPorColaborador(id_colaborador):
 
     return jsonify(relacao)
 
-@colaborador_EPIs_bp.route('/buscarPepi/<int:id_epi>', methods=['GET'])
-def buscarRelacaoPorColaborador(id_epi):
+@relation_colab_epi_bp.route('/buscarPepi/<int:id_epi>', methods=['GET'])
+def buscarRelacaoPorEpi(id_epi):
     conexao = criar_conexao()
     cursor = conexao.cursor(dictionary=True)
 
@@ -57,7 +57,7 @@ def buscarRelacaoPorColaborador(id_epi):
 
     return jsonify(relacao)
 
-@colaborador_EPIs_bp.route('/add', methods=['POST'])
+@relation_colab_epi_bp.route('/add', methods=['POST'])
 def novaRelacao():
     nova_relacao = request.get_json()
 
@@ -93,7 +93,7 @@ def novaRelacao():
     
     return jsonify(status)
 
-@colaborador_EPIs_bp.route('/alterar/<int:id>', methods=['PUT'])
+@relation_colab_epi_bp.route('/alterar/<int:id>', methods=['PUT'])
 def alterarRelacao(id):
     conexao = criar_conexao()
     cursor = conexao.cursor(dictionary=True)
@@ -141,7 +141,7 @@ def alterarRelacao(id):
         cursor.close()
         fechar_conexao(conexao)
 
-@colaborador_EPIs_bp.route('/deletar/<int:id>', methods=['DELETE'])
+@relation_colab_epi_bp.route('/deletar/<int:id>', methods=['DELETE'])
 def deletarRelacao(id):
     conexao = criar_conexao()
     cursor =  conexao.cursor()

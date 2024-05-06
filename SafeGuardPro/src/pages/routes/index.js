@@ -9,6 +9,8 @@ import Inicio from "../Inicio";
 import Login from "../Login";
 import BottomNav from "../Bottom_Nav";
 import Cad_EPIs from "../EPIs/Cadastrar";
+import Cadastro from "../Colaboradores/Cadastro";
+import ExibirEPI from "../EPIs/Exibir";
 
 
 const Stack = createNativeStackNavigator()
@@ -27,6 +29,12 @@ const Rotas = () => {
                 {/* Cadastros */}
 
                 <Stack.Screen name="Cad_EPIs" component={Cad_EPIs} options={{ headerShown : false }} />
+                <Stack.Screen name="Cad_Colab" component={Cadastro} options={{ headerShown : false }} />
+
+                {/* Exibirção */}
+
+                <Stack.Screen name="ExibirEPI" component={ExibirEPI} options={{ headerShown : false }} />
+
             </Stack.Navigator>
         </NavigationContainer>
     )

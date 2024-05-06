@@ -4,56 +4,83 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { corPrincipal, corBranco, corTitulo, meusEstilos } from "../../styles/meusEstilos"
 
 //$ Importando telas
-import EPIs from "../EPIs/List";
+import Lista_EPIs from "../EPIs/List";
 import Home from "../Colaboradores/Home";
 import Settings from "../Colaboradores/Settings";
 import Listar from "../Colaboradores/List";
+import { cargosAltorizados } from "../../components/api_call";
 
 const Tab = createBottomTabNavigator()
 
+
 const BottomNav = ({ route }) => {
+
+    const { contribuidor } = route.params;
+
     return (
         <Tab.Navigator
-            tabBarOptions={{
-                activeTintColor: corPrincipal, // Cor dos ícones ativos
-                inactiveTintColor: 'gray', // Cor dos ícones inativos
+            screenOptions={{
+                tabBarActiveTintColor: corPrincipal,
+                tabBarInactiveTintColor: "gray",
+                tabBarStyle: [
+                    {
+                        "display": "flex"
+                    },
+                    null
+                ]
             }}
         >
 
-            <Tab.Screen 
-                name="Home" component={Home} options={{ 
-                    headerShown : false,
-                    tabBarShowLabel : false,
+            <Tab.Screen
+                name="Home"
+                component={Home}
+                initialParams={{ contribuidor: contribuidor }}
+                options={{
+                    headerShown: false,
+                    tabBarShowLabel: false,
                     tabBarIcon: ({ size, color }) => (
                         <MaterialIcons name="home" size={size} color={color} />
                     ),
                 }}
             />
 
-            <Tab.Screen 
-                name="Colaboradores" component={Listar} options={{ 
-                    headerShown : false,
-                    tabBarShowLabel : false,
+            {
+                cargosAltorizados.includes(contribuidor.cargo) ? (
+                    <Tab.Screen
+                        name="Colaboradores"
+                        component={Listar}
+                        initialParams={{ contribuidor: contribuidor }}
+                        options={{
+                            headerShown: false,
+                            tabBarShowLabel: false,
+                            tabBarIcon: ({ size, color }) => (
+                                <MaterialIcons name="groups" size={size} color={color} />
+                            ),
+                        }}
+                    />
+                ) : null
+            }
+
+            <Tab.Screen
+                name="EPI"
+                component={Lista_EPIs}
+                initialParams={{ contribuidor: contribuidor, userOnly: !cargosAltorizados.includes(contribuidor.cargo) }}
+                options={{
+                    headerShown: false,
+                    tabBarShowLabel: false,
                     tabBarIcon: ({ size, color }) => (
                         <MaterialIcons name="headphones" size={size} color={color} />
                     ),
                 }}
             />
 
-            <Tab.Screen 
-                name="EPI" component={EPIs} options={{ 
-                    headerShown : false,
-                    tabBarShowLabel : false,
-                    tabBarIcon: ({ size, color }) => (
-                        <MaterialIcons name="headphones" size={size} color={color} />
-                    ),
-                }}
-            />
-
-            <Tab.Screen 
-                name="Settings" component={Settings} options={{ 
-                    headerShown : false,
-                    tabBarShowLabel : false,
+            <Tab.Screen
+                name="Settings"
+                component={Settings}
+                initialParams={{ contribuidor: contribuidor }}
+                options={{
+                    headerShown: false,
+                    tabBarShowLabel: false,
                     tabBarIcon: ({ size, color }) => (
                         <MaterialIcons name="settings" size={size} color={color} />
                     ),

@@ -3,14 +3,22 @@ import { ImageBackground, View, Text, StyleSheet, TextInput, TouchableOpacity, I
 import * as Animar from 'react-native-animatable'
 import { Picker } from '@react-native-picker/picker';
 import { corPrincipal, corBranco, corTitulo, meusEstilos } from "../../styles/meusEstilos"
+import { CallLogin } from "../../components/api_call";
 
 const Login = ({ navigation }) => {
     const [tipoAcesso, setTipoAcesso] = useState('vendedor')
-    const [Usuario, setUsuario] = useState('')
-    const [Senha, setSenha] = useState('')
+    const [Usuario, setUsuario] = useState("Pimentinha@gmail.com")
+    const [Senha, setSenha] = useState("10122233")
 
     const [MensagemLogin, setMensagemLogin] = useState('')
 
+    const login = async () => {
+        let Contribuidor = await CallLogin(Usuario, Senha)
+
+        if (Contribuidor) {
+            navigation.navigate('BottomNav', {contribuidor : Contribuidor})
+        }
+    }
 
     return (
         <ImageBackground source={require('../../assets/bg.png')} resizeMode="cover" style={meusEstilos.conteudoHeader}>
@@ -21,9 +29,9 @@ const Login = ({ navigation }) => {
                 <Text style={styles.headerText}>Bem-vindo(a) </Text>
             </Animar.View>
             <Animar.View animation={'fadeInUp'} style={meusEstilos.conteudoCorpo}>
-                <Text style={styles.label}> Usuario:</Text>
+                <Text style={styles.label}> Email:</Text>
                 <TextInput
-                    placeholder="Digite seu usuario..."
+                    placeholder="Digite seu Email..."
                     style={styles.inputLogin}
                     value={Usuario}
                     onChangeText={setUsuario}
@@ -39,7 +47,7 @@ const Login = ({ navigation }) => {
 
                 <Text>{MensagemLogin}</Text>
 
-                <TouchableOpacity style={[meusEstilos.botao, {backgroundColor : corPrincipal}]} onPress={() => navigation.navigate('BottomNav')}>
+                <TouchableOpacity style={[meusEstilos.botao, {backgroundColor : corPrincipal}]} onPress={login}>
                     <Text style={[meusEstilos.textoBotao, {color: corBranco}]}> Acessar </Text>
                 </TouchableOpacity>
             </Animar.View>

@@ -1,11 +1,14 @@
 import { StyleSheet } from "react-native"
 
 const corPrincipal = '#fc7303'
-const corSecundaria = '#29292E'
+const corSecundaria = '#29292e'
 const corBorda = '#CCC'
 const corTexto = '#222'
 const corTitulo = '#dfdfdf'
 const corBranco = '#fff'
+const corPreto = 'black'
+
+const ScreenPadding = 25
 
 const meusEstilos = StyleSheet.create({
     conteudoHeader: {
@@ -53,65 +56,16 @@ const meusEstilos = StyleSheet.create({
         borderColor: corBorda,
         marginRight: 8
     },
-    botaoIcone: {
-        borderColor: corPrincipal,
-        backgroundColor: corBranco,
-        borderWidth: 2,
-        borderRadius: 25,
-        marginHorizontal: 2,
-        padding: 2,
-    },
-    botaoIcone2: {
-        borderColor: corBranco,
-        backgroundColor: corPrincipal,
-        borderWidth: 2,
-        borderRadius: 25,
-        marginHorizontal: 2,
-        padding: 2,
-    },
-    itemLista: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: corBorda,
-    },
-    imagemLista: {
-        width: 50,
-        height: 50,
-        borderRadius: 5,
-        marginRight: 10,
-    },
-    controles: {
-        flexDirection: 'row',
-        marginBottom: 10,
-        marginHorizontal: 10,
-        alignItems: 'center',
-    },
-    tituloLista: {
-        flexDirection: 'row',
-        paddingHorizontal: 10,
-        paddingBottom: 10,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: corBorda,
-    },
-    textContainer: {
+    ScreenBody: {
         flex: 1,
-    },
-    preco: {
-        fontSize: 18,
-    },
-    inputCad: {
-        marginBottom: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        padding: 10,
-        backgroundColor: corBranco
-    },
+        gap: 25,
+        padding: ScreenPadding, 
+        flexDirection: 'column', 
+        backgroundColor: corBranco,
+    }
+
 })
+
 export {
     corPrincipal,
     corSecundaria,
@@ -119,5 +73,7 @@ export {
     corTexto,
     corTitulo,
     corBranco,
-    meusEstilos
+    meusEstilos,
+    ScreenPadding,
+    corPreto
 }

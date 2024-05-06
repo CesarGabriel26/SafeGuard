@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react"
-import { ImageBackground, View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native'
+import { ImageBackground, Image, View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import * as Animar from 'react-native-animatable'
 import { Picker } from '@react-native-picker/picker';
 import { corPrincipal, corBranco, corTitulo, meusEstilos } from "../../../styles/meusEstilos"
-import { BuscarEnderecoViaCep, Cadastrar_EditarColaborador, CallLogin } from "../../../components/api_call";
+import { BuscarEnderecoViaCep, Cadastrar_EditarColaborador, CallLogin, DeletarColaborador } from "../../../components/api_call";
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 
 const Cadastro = ({ navigation, route }) => {
+    const [Id, setId] = useState(0)
+
     const [Usuario, setUsuario] = useState("")
     const [Email, setEmail] = useState("")
 
@@ -42,7 +44,7 @@ const Cadastro = ({ navigation, route }) => {
         }
     }
 
-    const Finalizar =  async() => {
+    const Finalizar = async () => {
         const data = {
             "bairro": Bairro,
             "cargo": Cargo,
@@ -58,6 +60,14 @@ const Cadastro = ({ navigation, route }) => {
             "setor": tipoAcesso
         }
 
+        for (const key in data) {
+            if (data[key] == "") {
+                Alert.alert('Todos os campos deven ser preenchidos');
+                return
+            }
+        }
+
+
         const userId = route.params ? route.params.colaborador.id : null
 
         try {
@@ -69,9 +79,23 @@ const Cadastro = ({ navigation, route }) => {
         }
     }
 
+    const DeletarUsuario = async () => {
+        try {
+
+            let resp = await DeletarColaborador(Id)
+            Alert.alert(resp.message)
+            navigation.goBack()
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         if (route.params) {
             const { colaborador } = route.params
+
+            setId(colaborador.id)
 
             setUsuario(colaborador.nome)
             setEmail(colaborador.email)
@@ -86,6 +110,9 @@ const Cadastro = ({ navigation, route }) => {
             setCidade(colaborador.cidade)
             setEstado(colaborador.estado)
         }
+
+        console.log(Id);
+
     }, [])
 
     useEffect(() => {
@@ -95,6 +122,21 @@ const Cadastro = ({ navigation, route }) => {
     return (
         <ImageBackground source={require('../../../assets/bg.png')} resizeMode="cover" style={meusEstilos.ScreenBody}>
             <Animar.View animation={'fadeInUp'} style={[meusEstilos.conteudoCorpo, { padding: 20, paddingTop: 20, borderRadius: 25 }]}>
+
+                <View style={{ marginBottom: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.botao}>
+                        <Image resizeMode="stretch" style={{ width: '100%', height: '100%' }} source={require('../../../assets/ProjetoEPI_voltar.png')} />
+                    </TouchableOpacity>
+                    {
+                        route.params ? (
+                            <TouchableOpacity style={styles.botao} onPress={DeletarUsuario}>
+                                <MaterialIcons name="delete" size={20} color={corBranco} />
+                            </TouchableOpacity>
+                        ) : null
+                    }
+
+                </View>
+
                 <ScrollView style={{ paddingHorizontal: 20 }}>
 
                     <View>
@@ -284,6 +326,16 @@ const styles = StyleSheet.create({
         paddingRight: 35,
         marginBottom: 15
     },
+    botao: {
+        backgroundColor: corPrincipal,
+        width: 45,
+        height: 45,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5,
+        borderRadius: 10
+
+    }
 })
 
 export default Cadastro

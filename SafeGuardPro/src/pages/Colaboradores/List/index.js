@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
-import { ImageBackground, View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity } from 'react-native'
+import { ImageBackground, View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Button } from 'react-native'
 import { corBranco, meusEstilos, corSecundaria, corPrincipal } from "../../../styles/meusEstilos"
 import { CallListColaboradores, CallBuscarColaboradores } from "../../../components/api_call"
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from '@react-native-picker/picker';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import * as Animar from 'react-native-animatable'
 
@@ -20,18 +20,18 @@ const Listar = ({ navigation }) => {
         try {
             let data = []
 
-            if (inputPesquisa == ''){
+            if (inputPesquisa == '') {
                 data = await CallListColaboradores();
-            }else {
+            } else {
                 data = await CallBuscarColaboradores(inputPesquisa);
             }
-            
+
             setcolaboradoresListaTotal(data);
         } catch (error) {
             console.error('Erro ao buscar colaboradores:', error);
         }
     };
-    
+
     const LoadList = () => {
         let slicedColaboradores = [...colaboradoresListaTotal]
 
@@ -61,9 +61,9 @@ const Listar = ({ navigation }) => {
         setColaboradoresLista(slicedColaboradores);
     };
 
-    const renderizarItem = ({item}) => {
+    const renderizarItem = ({ item }) => {
         return (
-            <TouchableOpacity style={styles.cell} onPress={() => navigation.navigate('Cad_Colab', {colaborador : item})} >
+            <TouchableOpacity style={styles.cell} onPress={() => navigation.navigate('Cad_Colab', { colaborador: item })} >
                 <Text>{item.nome}</Text>
                 <Text>{item.cargo}</Text>
             </TouchableOpacity>
@@ -77,7 +77,7 @@ const Listar = ({ navigation }) => {
     useEffect(() => {
         buscarColaboradores();
     }, [inputPesquisa]);
-    
+
     useEffect(() => {
         LoadList();
     }, [colaboradoresListaTotal, currentPage]);
@@ -98,11 +98,11 @@ const Listar = ({ navigation }) => {
                 />
                 <Picker
                     selectedValue={currentOrganization}
-                    onValueChange={(itemValue, itemIndex) => { 
+                    onValueChange={(itemValue, itemIndex) => {
                         setCurrentOrganization(itemValue)
                         LoadList()
                     }}
-                    style={{ flex: 1}}
+                    style={{ flex: 1 }}
                 >
                     <Picker.Item label="A-Z" value="az" />
                     <Picker.Item label="Z-A" value="za" />
@@ -125,7 +125,43 @@ const Listar = ({ navigation }) => {
                     renderItem={renderizarItem}
                     keyExtractor={(item) => item.id.toString()}
                 />
+
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
+                    <TouchableOpacity
+                        style={styles.botao}
+                        onPress={() => {
+                            if (currentPage > 1) {
+                                setCurrentPage(currentPage - 1)
+                            }
+                        }}
+                    >
+                        <MaterialIcons name="arrow-back-ios" size={35} color={corBranco} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.botao}
+                        onPress={() => {
+                            buscarColaboradores()
+                            LoadList()
+                        }}
+                    >
+                        <MaterialIcons name="refresh" size={35} color={corBranco} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.botao}
+                        onPress={() => {
+                            if (colaboradoresLista.length > itemsPerPage) {
+                                setCurrentPage(currentPage + 1)
+                            }
+                        }}
+                    >
+                        <MaterialIcons name="arrow-forward-ios" size={35} color={corBranco} />
+                    </TouchableOpacity>
+                </View>
+
             </View>
+
+
 
         </ImageBackground>
     )
@@ -136,8 +172,8 @@ const styles = StyleSheet.create({
         padding: 5,
         backgroundColor: corBranco,
         borderRadius: 10,
-        flex : 1,
-        gap : 5
+        flex: 1,
+        gap: 5
     },
     cell: {
         flexDirection: 'row',
@@ -145,6 +181,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 5,
         backgroundColor: corBranco,
+        borderRadius: 10
+    },
+    botao: {
+        backgroundColor: corPrincipal,
+        width: 45,
+        height: 45,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5,
         borderRadius: 10
     }
 

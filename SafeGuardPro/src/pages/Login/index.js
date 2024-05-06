@@ -7,8 +7,8 @@ import { CallLogin } from "../../components/api_call";
 
 const Login = ({ navigation }) => {
     const [tipoAcesso, setTipoAcesso] = useState('vendedor')
-    const [Usuario, setUsuario] = useState("Pimentinha@gmail.com")
-    const [Senha, setSenha] = useState("10122233")
+    const [Usuario, setUsuario] = useState("Pimentinha@safenet.com")
+    const [Senha, setSenha] = useState("1234")
 
     const [MensagemLogin, setMensagemLogin] = useState('')
 

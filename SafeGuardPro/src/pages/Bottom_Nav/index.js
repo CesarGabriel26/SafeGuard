@@ -8,7 +8,7 @@ import Lista_EPIs from "../EPIs/List";
 import Home from "../Colaboradores/Home";
 import Settings from "../Colaboradores/Settings";
 import Listar from "../Colaboradores/List";
-import { cargosAltorizados } from "../../components/api_call";
+import { cargosAutorizados } from "../../components/api_call";
 
 const Tab = createBottomTabNavigator()
 
@@ -45,7 +45,7 @@ const BottomNav = ({ route }) => {
             />
 
             {
-                cargosAltorizados.includes(contribuidor.cargo) ? (
+                cargosAutorizados.includes(contribuidor.cargo) ? (
                     <Tab.Screen
                         name="Colaboradores"
                         component={Listar}
@@ -64,7 +64,7 @@ const BottomNav = ({ route }) => {
             <Tab.Screen
                 name="EPI"
                 component={Lista_EPIs}
-                initialParams={{ contribuidor: contribuidor, userOnly: !cargosAltorizados.includes(contribuidor.cargo) }}
+                initialParams={{ contribuidor: contribuidor, userOnly: !cargosAutorizados.includes(contribuidor.cargo) }}
                 options={{
                     headerShown: false,
                     tabBarShowLabel: false,

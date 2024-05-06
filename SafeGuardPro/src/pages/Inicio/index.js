@@ -26,7 +26,7 @@ const Inicio = ({navigation}) => {
 
                 <View style={styles.logoSafeNet}>
                     <Animar.Image
-                        source={require('../../assets/SafeNetLogo.svg')}
+                        source={require('../../assets/SafeNetLogo.png')}
                         animation='zoomIn'
                         style={{ width: '100%' }}
                         resizeMode="contain" 

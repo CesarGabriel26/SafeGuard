@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { ImageBackground, View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, Button } from 'react-native'
 import * as Animar from 'react-native-animatable'
 import { corPrincipal, corBranco, corTitulo, meusEstilos } from "../../../styles/meusEstilos"
-import { Cadastrar_EditarEpi, CallBuscarColaboradores, CallListColaboradores } from "../../../components/api_call";
+import { Cadastrar_EditarEpi, CallBuscarColaboradores, CallListColaboradores, DeletarEPI } from "../../../components/api_call";
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import Veincular from "../../../components/modal_veincular";
 
@@ -14,7 +14,7 @@ const Cad_EPIs = ({ navigation, route }) => {
     const [Categoria, setCategoria] = useState("")
     const [Descricao, setDescricao] = useState("")
     const [Foto, setFoto] = useState("https://beautyrepublicfdl.com/wp-content/uploads/2020/06/placeholder-image.jpg")
-    const [Validade, setValidade] = useState(0)
+    const [Validade, setValidade] = useState("0")
 
     const Finalizar = async () => {
 
@@ -26,7 +26,7 @@ const Cad_EPIs = ({ navigation, route }) => {
             "validade": parseInt(Validade),
         }
 
-        const id = route.params ? route.params.epi.id : null
+        const id = route.params.epi ? route.params.epi.id : null
 
         try {
             const resp = await Cadastrar_EditarEpi(data, id, !!id);
@@ -37,8 +37,20 @@ const Cad_EPIs = ({ navigation, route }) => {
         }
     }
 
+    const Deletar = async () => {
+        try {
+
+            let resp = await DeletarEPI(Id)
+            Alert.alert(resp.message)
+            navigation.goBack()
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
-        if (route.params) {
+        if (route.params.epi) {
             const { epi } = route.params
 
             setId(epi.id)
@@ -53,6 +65,21 @@ const Cad_EPIs = ({ navigation, route }) => {
     return (
         <ImageBackground source={require('../../../assets/bg.png')} resizeMode="cover" style={meusEstilos.ScreenBody}>
             <Animar.View animation={'fadeInUp'} style={[meusEstilos.conteudoCorpo, { padding: 20, paddingTop: 20, borderRadius: 25 }]}>
+
+                <View style={{ marginBottom: 15, flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.botao2}>
+                        <Image resizeMode="stretch" style={{ width: '100%', height: '100%' }} source={require('../../../assets/ProjetoEPI_voltar.png')} />
+                    </TouchableOpacity>
+                    {
+                        route.params ? (
+                            <TouchableOpacity style={styles.botao2} onPress={Deletar}>
+                                <MaterialIcons name="delete" size={20} color={corBranco} />
+                            </TouchableOpacity>
+                        ) : null
+                    }
+
+                </View>
+
                 <ScrollView style={{ paddingHorizontal: 20 }}>
 
                     <View>
@@ -121,10 +148,10 @@ const Cad_EPIs = ({ navigation, route }) => {
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 20 }}>
                     <TouchableOpacity style={[styles.botao, { backgroundColor: corPrincipal }]} onPress={Finalizar} >
-                        <Text style={[meusEstilos.textoBotao, { color: corBranco }]}> {route.params ? "Atualizar" : "Cadastrar"} </Text>
+                        <Text style={[meusEstilos.textoBotao, { color: corBranco }]}> {route.params.epi ? "Atualizar" : "Cadastrar"} </Text>
                     </TouchableOpacity>
                     {
-                        route.params ? (
+                        route.params.epi ? (
                             <TouchableOpacity style={[styles.botao, { backgroundColor: corPrincipal }]} onPress={() => setModalVeincular(true)} >
                                 <Text style={[meusEstilos.textoBotao, { color: corBranco }]}> Veincular </Text>
                             </TouchableOpacity>
@@ -135,7 +162,7 @@ const Cad_EPIs = ({ navigation, route }) => {
             </Animar.View>
 
 
-            <Veincular Visibility = {ModalVeincular} SetVisibility = {setModalVeincular} NomeEPI = {Nome} IdEpi = {Id} currentUser = {route.params.colaborador.id} />
+            <Veincular Visibility={ModalVeincular} SetVisibility={setModalVeincular} NomeEPI={Nome} IdEpi={Id} currentUser={route.params.colaborador.id} />
 
         </ImageBackground>
     )
@@ -186,6 +213,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 15
     },
+    botao2: {
+        backgroundColor: corPrincipal,
+        width: 45,
+        height: 45,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5,
+        borderRadius: 10
+
+    }
 })
 
 export default Cad_EPIs

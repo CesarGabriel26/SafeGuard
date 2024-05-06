@@ -17,7 +17,7 @@ const Home = ({ navigation, route }) => {
     
             const episDataPromises = data.map(async (epi, i) => {
                 const dt = await CallBuscaEpi(epi.id_EPIs);
-                return {
+                 return {
                     id: epi.id,
                     nome: dt.nome_epi,
                     validade: epi.data_vencimento
@@ -33,6 +33,8 @@ const Home = ({ navigation, route }) => {
     };
 
     const renderizarItemEPI = ({ item }) => {
+        console.log(item);
+        
         const hoje = new Date();
         const validade = new Date(item.validade);
         const diferencaEmDias = Math.ceil((validade - hoje) / (1000 * 60 * 60 * 24));
@@ -58,6 +60,8 @@ const Home = ({ navigation, route }) => {
                 }
             }
         }
+
+        
 
         return (
             <TouchableOpacity onPress={() => navigation.navigate('ExibirEPI', { epi: item })} style={[styles.cell, styles.cellType2]}>

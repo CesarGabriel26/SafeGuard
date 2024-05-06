@@ -84,7 +84,7 @@ const Lista_EPIs = ({ navigation, route }) => {
     };
 
     const renderizarItem = ({ item }) => {
-        let validade = route.params.userOnly ? item.validade :`${item.validade} dias`
+        let validade = route.params.userOnly ? item.validade : `${item.validade} dias`
 
         if (route.params.userOnly) {
             const dataValidade = new Date(validade); // Converter a string em objeto Date
@@ -122,7 +122,7 @@ const Lista_EPIs = ({ navigation, route }) => {
             <TouchableOpacity style={styles.cell} onPress={() => {
                 if (!route.params.userOnly) {
                     navigation.navigate('Cad_EPIs', { colaborador: route.params.contribuidor, epi: item })
-                }else {
+                } else {
                     navigation.navigate('ExibirEPI', { epi: item })
                 }
             }} >
@@ -177,7 +177,9 @@ const Lista_EPIs = ({ navigation, route }) => {
                 <View style={[styles.cell, { borderBottomWidth: 1, borderColor: corSecundaria }]}>
                     <Text > Colaboradores {EpisListaTotal.length} </Text>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('Cad_EPIs')}>
+                    <TouchableOpacity onPress={() => {
+                        navigation.navigate('Cad_EPIs', { colaborador : route.params.contribuidor })
+                    }}>
                         <MaterialIcons name="add-circle" size={20} color={corPrincipal} />
                     </TouchableOpacity>
                 </View>
@@ -192,6 +194,39 @@ const Lista_EPIs = ({ navigation, route }) => {
                     renderItem={renderizarItem}
                     keyExtractor={(item) => item.id.toString()}
                 />
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
+                    <TouchableOpacity
+                        style={styles.botao}
+                        onPress={() => {
+                            if (currentPage > 1) {
+                                setCurrentPage(currentPage - 1)
+                            }
+                        }}
+                    >
+                        <MaterialIcons name="arrow-back-ios" size={35} color={corBranco} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.botao}
+                        onPress={() => {
+                            buscarEpis()
+                            LoadList()
+                        }}
+                    >
+                        <MaterialIcons name="refresh" size={35} color={corBranco} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.botao}
+                        onPress={() => {
+                            if (EpisLista.length > itemsPerPage) {
+                                setCurrentPage(currentPage + 1)
+                            }
+                        }}
+                    >
+                        <MaterialIcons name="arrow-forward-ios" size={35} color={corBranco} />
+                    </TouchableOpacity>
+                </View>
+
             </View>
 
         </ImageBackground>
@@ -214,6 +249,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 5,
         backgroundColor: corBranco,
+        borderRadius: 10
+    },
+    botao: {
+        backgroundColor: corPrincipal,
+        width: 45,
+        height: 45,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5,
         borderRadius: 10
     }
 

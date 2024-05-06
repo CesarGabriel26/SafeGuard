@@ -47,7 +47,7 @@ insert into EPIs (nome_epi, validade, descricao, categoria, foto) value ('óculo
 
 insert into colaboradores (nome, email, senha, setor, cpf, cargo, cep, endereco, nr, bairro, cidade, estado) value ('Carlos', 'CarlosDaniel@gmail.com', 10122233, 'administração', 46832494668, 'diretor', 106220145, 'espiritu santo', 28, 'alvares cabral', 'andradina', 'sao paulo');
 
-insert into notificacoes (descricao) value ('notificação');
+insert into notificacoes (descricao, id_colaboradores, id_epi) value ('Novo EPI veinculado a voce', 2, 1);
 
 insert into colaborador_EPIs (id_colaborador, id_EPIs, id_colaborador_supervisor, data_EPI, data_vencimento) value (1,1,2, '2026-10-28', '2020-8-03');
 

@@ -129,7 +129,7 @@ def alterarColaborador(id):
         if not campos_para_atualizar:
             return jsonify({'status': 'error', 'message': 'Nenhum campo fornecido para atuaização'}), 400
         
-        comando = "UPDATE colaboradores SET "+",".join(campos_para_atualizar) + "WHERE id = %s"
+        comando = "UPDATE colaboradores SET " + ",".join(campos_para_atualizar) + "WHERE id = %s"
         
         valores = valores_para_atualizar + [id]
         cursor.execute(comando,valores)
@@ -150,28 +150,65 @@ def alterarColaborador(id):
 @colaboradores_bp.route('/deletar/<int:id>', methods=['DELETE'])
 def deletarColaborador(id):
     conexao = criar_conexao()
-    cursor =  conexao.cursor()
+    cursor = conexao.cursor()
 
-    colaborador_existe = cursor.execute("SELECT COUNT(*) FROM colaboradores WHERE id = %s", (id,))
-
-    if colaborador_existe == 0:
-        return jsonify({'status': 'error', 'message': 'Colaborador não encontrado'}), 404
-    
     try:
+        # Verifica se o colaborador existe
+        cursor.execute("SELECT COUNT(*) FROM colaboradores WHERE id = %s", (id,))
+        colaborador_existe = cursor.fetchone()[0]  # Lê o resultado da consulta
+
+        if colaborador_existe == 0:
+            return jsonify({'status': 'error', 'message': 'Colaborador não encontrado'}), 404
+
+        # Deleta o colaborador
         comando = 'DELETE FROM colaboradores WHERE id = %s'
-        
         cursor.execute(comando, (id,))
-        
         conexao.commit()
-        
+
         status = {'status': 'success', 'message': 'Colaborador deletado com sucesso'}
-        
+
     except Exception as e:
         conexao.rollback()
         status = {'status': 'error', 'message': str(e)}
     finally:
         cursor.close()
         conexao.close()
-    
+
     return jsonify(status)
-    
+
+@colaboradores_bp.route('/login', methods=['POST'])
+def login(): 
+    conexao = None
+    cursor = None
+
+    try:
+        conexao = criar_conexao()
+        cursor = conexao.cursor(dictionary=True)
+
+        dados_login = request.get_json()
+        
+        if CheckValueNotIn(["email", "senha"], dados_login):
+            return jsonify({'status': 'error', 'message': 'Dados incompletos'}), 400
+            
+        consulta = "SELECT * FROM colaboradores WHERE email = %s AND senha = %s"
+
+        cursor.execute(consulta, (dados_login['email'], dados_login['senha']))
+
+        colaborador = cursor.fetchone()
+
+        if colaborador:
+            return jsonify(colaborador)
+        else:
+            # Se o colaborador não for encontrado, retorne um erro com uma mensagem apropriada
+            return jsonify({'status': 'error', 'message': 'Credenciais inválidas'}), 404
+
+    except Exception as e:
+        # Se ocorrer um erro durante o processamento da requisição, retorne um erro com a mensagem do erro
+        conexao.rollback()
+        return jsonify({'status': 'error', 'message': 'Erro interno do servidor: ' + str(e)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conexao:
+            fechar_conexao(conexao)

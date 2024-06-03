@@ -5,7 +5,7 @@ import { Picker } from '@react-native-picker/picker';
 import { corPrincipal, corBranco, corTitulo, meusEstilos } from "../../styles/meusEstilos"
 import { CallLogin } from "../../components/api_call";
 import Checkbox from "expo-checkbox"
-// import AsyncStorage from "@react-native-async-storage/async-storage"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const Login = ({ navigation }) => {
     const [tipoAcesso, setTipoAcesso] = useState('Colaborador')
@@ -29,9 +29,9 @@ const Login = ({ navigation }) => {
     }
 
     const finalizarLogin = async (json) => {
-        // if (manterConectado) {
-        //     await AsyncStorage.setItem("UsuarioLogado", JSON.stringify(json))
-        // }
+        if (manterConectado) {
+            await AsyncStorage.setItem("UsuarioLogado", JSON.stringify(json))
+        }
 
         navigation.navigate('BottomNav', { contribuidor: json, acesso: tipoAcesso })
     }

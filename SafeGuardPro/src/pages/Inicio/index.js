@@ -3,15 +3,17 @@ import { ImageBackground, View, Text, StyleSheet, Image, TouchableOpacity } from
 import * as Animar from 'react-native-animatable'
 import { corPrincipal, corBranco, corTitulo, meusEstilos } from "../../styles/meusEstilos"
 
-const Inicio = ({navigation}) => {
+
+const Inicio = ({ navigation }) => {
+
     return (
         <ImageBackground source={require('../../assets/bg.png')} resizeMode="cover" style={meusEstilos.conteudoHeader}>
             <View style={styles.logo}>
                 <Animar.Image
                     source={require('../../assets/logo.png')}
                     animation='zoomIn'
-                    style={{ width: '100%' }}
-                    resizeMode="contain" 
+                    style={{ width: 250 }}
+                    resizeMode="contain"
                 />
             </View>
             <Animar.View animation='fadeInUp' delay={600} style={[meusEstilos.conteudoCorpo, styles.conteudoCorpo]}>
@@ -21,7 +23,7 @@ const Inicio = ({navigation}) => {
                 <TouchableOpacity style={meusEstilos.botao} onPress={() => navigation.navigate('Login')}>
                     <Text style={meusEstilos.textoBotao}> Acessar </Text>
                 </TouchableOpacity>
-                
+
                 <Text style={styles.titulo}>Um aplicativo por SafetyNet Technoogies!</Text>
 
                 <View style={styles.logoSafeNet}>
@@ -29,7 +31,7 @@ const Inicio = ({navigation}) => {
                         source={require('../../assets/SafeNetLogo.png')}
                         animation='zoomIn'
                         style={{ width: '100%' }}
-                        resizeMode="contain" 
+                        resizeMode="contain"
                     />
                 </View>
             </Animar.View>
@@ -38,7 +40,7 @@ const Inicio = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
-    conteudoCorpo: {flex: 4, backgroundColor : 'transparent'},
+    conteudoCorpo: { flex: 4, backgroundColor: 'transparent' },
     logo: {
         flex: 2,
         justifyContent: 'center',
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     titulo: {
-        marginTop : 20,
+        marginTop: 20,
         color: corBranco
     },
 })

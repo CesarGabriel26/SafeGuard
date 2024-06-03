@@ -63,6 +63,7 @@ const Cadastro = ({ navigation, route }) => {
         for (const key in data) {
             if (data[key] == "") {
                 Alert.alert('Todos os campos deven ser preenchidos');
+                alert('Todos os campos deven ser preenchidos')
                 return
             }
         }
@@ -84,6 +85,7 @@ const Cadastro = ({ navigation, route }) => {
 
             let resp = await DeletarColaborador(Id)
             Alert.alert(resp.message)
+            alert(resp.message)
             navigation.goBack()
 
         } catch (error) {

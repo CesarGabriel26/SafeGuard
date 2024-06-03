@@ -15,7 +15,7 @@ const Tab = createBottomTabNavigator()
 
 const BottomNav = ({ route }) => {
 
-    const { contribuidor } = route.params;
+    const { contribuidor, acesso } = route.params;
 
     return (
         <Tab.Navigator
@@ -34,7 +34,7 @@ const BottomNav = ({ route }) => {
             <Tab.Screen
                 name="Home"
                 component={Home}
-                initialParams={{ contribuidor: contribuidor }}
+                initialParams={{ contribuidor: contribuidor, acesso : acesso }}
                 options={{
                     headerShown: false,
                     tabBarShowLabel: false,
@@ -45,7 +45,7 @@ const BottomNav = ({ route }) => {
             />
 
             {
-                cargosAutorizados.includes(contribuidor.cargo) ? (
+                cargosAutorizados.includes(acesso) ? (
                     <Tab.Screen
                         name="Colaboradores"
                         component={Listar}
@@ -64,7 +64,7 @@ const BottomNav = ({ route }) => {
             <Tab.Screen
                 name="EPI"
                 component={Lista_EPIs}
-                initialParams={{ contribuidor: contribuidor, userOnly: !cargosAutorizados.includes(contribuidor.cargo) }}
+                initialParams={{ contribuidor: contribuidor, userOnly: !cargosAutorizados.includes(acesso) }}
                 options={{
                     headerShown: false,
                     tabBarShowLabel: false,

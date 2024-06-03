@@ -129,33 +129,30 @@ const Listar = ({ navigation }) => {
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
                     <TouchableOpacity
-                        style={styles.botao}
                         onPress={() => {
                             if (currentPage > 1) {
                                 setCurrentPage(currentPage - 1)
                             }
                         }}
                     >
-                        <MaterialIcons name="arrow-back-ios" size={35} color={corBranco} />
+                        <MaterialIcons name="arrow-back-ios" size={35} color={corPrincipal} />
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.botao}
                         onPress={() => {
                             buscarColaboradores()
                             LoadList()
                         }}
                     >
-                        <MaterialIcons name="refresh" size={35} color={corBranco} />
+                        <MaterialIcons name="refresh" size={35} color={corPrincipal} />
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.botao}
                         onPress={() => {
                             if (colaboradoresLista.length > itemsPerPage) {
                                 setCurrentPage(currentPage + 1)
                             }
                         }}
                     >
-                        <MaterialIcons name="arrow-forward-ios" size={35} color={corBranco} />
+                        <MaterialIcons name="arrow-forward-ios" size={35} color={corPrincipal} />
                     </TouchableOpacity>
                 </View>
 

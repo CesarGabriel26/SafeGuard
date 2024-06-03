@@ -49,17 +49,14 @@ export default function Veincular({ Visibility, SetVisibility, NomeEPI, IdEpi, c
         try {
 
             let data = await Cadastrar_EditarRelacao({
-                
-                "data_EPI": "2024/05/05",
-                "data_vencimento": "2025/05/05",
                 "id_EPIs": IdEpi,
                 "id_colaborador": selectedUser,
                 "id_colaborador_supervisor": currentUser
-                
             })
 
             console.log(data);
             Alert.alert('EPI Veinculado');
+            alert('EPI Veinculado')
 
             SetVisibility(!Visibility);
         } catch (error) {
@@ -75,6 +72,7 @@ export default function Veincular({ Visibility, SetVisibility, NomeEPI, IdEpi, c
             visible={Visibility}
             onRequestClose={() => {
                 Alert.alert('Operação cancelada');
+                alert('Operação cancelada')
                 SetVisibility(!Visibility);
             }}
         >

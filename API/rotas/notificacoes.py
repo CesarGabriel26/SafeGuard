@@ -13,148 +13,44 @@ def CheckValueNotIn(keys = [], obj = {}):
 
 #@ notificacoes -> descricao, id_colaboradores, id_epi
 
-@notificacao_bp.route('/listar', methods=['GET'])
-def listarNotificacoes():
+@notificacao_bp.route('/gerarNotificacao', methods=['POST'])
+def gerarNotificacao():
     conexao = criar_conexao()
     cursor = conexao.cursor(dictionary=True)
-
-    cursor.execute("SELECT * FROM notificacoes")
-    Colaboradores = cursor.fetchall()
-
-    cursor.close()
-    conexao.close()
-
-    return jsonify(Colaboradores)
-
-@notificacao_bp.route('/buscarPcolaborador/<int:id_colaborador>', methods=['GET'])
-def buscarNotificacaoPorColaborador(id_colaborador):
-    conexao = criar_conexao()
-    cursor = conexao.cursor(dictionary=True)
-
-    consulta = "SELECT * FROM notificacoes WHERE id_colaboradores = %s"
-
-    cursor.execute(consulta, (id_colaborador, ))
-
-    Notificacao = cursor.fetchall()
     
+    cursor.execute(
+        """
+            select
+                ce.id, e.nome_epi, ce.id_colaborador, ce.id_EPIs, date_format(ce.data_vencimento, '%d/%m/%y') as data_vencimento
+            from
+                colaborador_EPIs ce join EPIs e on ce.id_EPIs = e.id
+            where
+                ce.data_vencimento <= (current_date() + interval 100 day) and ce.notificado = 0;
+        """
+    )
+    
+    dados = cursor.fetchall()
+    for item in dados:
+        comando = "insert into notificacoes (id_colaboradores, id_epi, descricao) value (%s,%s,%s)"
+        descricao = f'Seu EPI {item.nome_epi} vence no dia {item.data_vencimento} solicite um novo com seu supervisor'
+        cursor.execute(comando, (item.id_colaborador, item.id_EPIs, descricao, ))
+        
+        comando = 'update colaborador_EPIs set notificado = 1 where id = %s'
+        cursor.execute(comando, (item.id, ))
+        
+    conexao.commit()
     cursor.close()
-    conexao.close()
+    fechar_conexao(conexao)
+    return jsonify(dados)
 
-    return jsonify(Notificacao)
-
-@notificacao_bp.route('/buscarPepi/<int:id_epi>', methods=['GET'])
-def buscarNotificacaoPorEpi(id_epi):
+@notificacao_bp.route('/obter/<int:id>', methods=['GET'])
+def obterNotificacao(id):
     conexao = criar_conexao()
     cursor = conexao.cursor(dictionary=True)
-
-    consulta = "SELECT * FROM notificacoes WHERE id_epi = %s"
-
-    cursor.execute(consulta, (id_epi, ))
-
-    Notificacao = cursor.fetchall()
+    
+    cursor.execute("select * from notificacoes where id_colaboradores = %s", (id, ))
+    dados = cursor.fetchall()
     
     cursor.close()
-    conexao.close()
-
-    return jsonify(Notificacao)
-
-@notificacao_bp.route('/add', methods=['POST'])
-def novaNotificacao():
-    nova_Notificacao = request.get_json()
-
-    if CheckValueNotIn(dados_necessarios,nova_Notificacao):
-        return jsonify({'status': 'error', "message": 'dados imcompletos'}), 400
-    
-    conexao = criar_conexao()
-    cursor = conexao.cursor()
-
-    try:
-        campos = []
-        keys = []
-        valores = []
-        
-        
-        for dado in nova_Notificacao:
-            campos.append(dado)
-            valores.append(f'%s')
-            keys.append(nova_Notificacao[dado])
-        
-        comando = f'INSERT INTO notificacoes ({",".join(campos)}) VALUES ({",".join(valores)})'
-        
-        cursor.execute(comando, keys)
-        conexao.commit()
-        status = {'status':'success', 'code': 201}
-        
-    except Exception as e:
-        conexao.rollback()
-        status = {'status': 'error', 'message': str(e)}
-        
-    finally:
-        cursor.close()
-        fechar_conexao(conexao)
-    
-    return jsonify(status)
-
-@notificacao_bp.route('/alterar/<int:id>', methods=['PUT'])
-def alterarNotificacao(id):
-    conexao = criar_conexao()
-    cursor = conexao.cursor(dictionary=True)
-
-    dados = request.get_json()
-    try:
-        campos_para_atualizar = []
-        valores_para_atualizar = []
-        
-        for dado in dados:
-            campos_para_atualizar.append(f'{dado} = %s')
-            valores_para_atualizar.append(dados[dado])
-
-        if not campos_para_atualizar:
-            return jsonify({'status': 'error', 'message': 'Nenhum campo fornecido para atualização'}), 400
-        
-        # Construct the SQL UPDATE statement
-        comando = "UPDATE notificacoes SET " + ", ".join(campos_para_atualizar) + " WHERE id = %s"
-        valores = valores_para_atualizar + [id]
-
-        print("SQL Query:", comando, valores)  # Print SQL query for debugging
-        
-        cursor.execute(comando, valores)
-        conexao.commit()
-
-        status = {'status': 'success', 'message': 'Colaborador atualizado com sucesso'}
-        
-    except Exception as e:
-        conexao.rollback()
-        status = {'status': 'error', 'message': str(e)}
-
-    finally:
-        cursor.close()
-        fechar_conexao(conexao)
-    
-    return jsonify(status)
-
-@notificacao_bp.route('/deletar/<int:id>', methods=['DELETE'])
-def deletarNotificacao(id):
-    conexao = criar_conexao()
-    cursor =  conexao.cursor()
-
-    Notificacao_existente = cursor.execute("SELECT COUNT(*) FROM notificacoes WHERE id = %s", (id,))
-
-    if Notificacao_existente == 0:
-        return jsonify({'status': 'error', 'message': 'Livro não encontrado'}), 404
-    
-    try:
-        comando = 'DELETE FROM notificacoes WHERE id = %s'
-        cursor.execute(comando, (id,))
-        conexao.commit()
-        status = {'status': 'success', 'message': 'Livro deletado com sucesso'}
-    
-    except Exception as e:
-        conexao.rollback()
-        status = {'status': 'error', 'message': str(e)}
-    
-    finally:
-        cursor.close()
-        conexao.close()
-        
-    return jsonify(status)
+    fechar_conexao(conexao)
+    return jsonify(dados)

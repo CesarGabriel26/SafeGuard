@@ -41,14 +41,13 @@ const Lista_EPIs = ({ navigation, route }) => {
             const data = await CallBuscaEpiPorColaborador(contribuidor.id);
 
             const episDataPromises = data.map(async (epi, i) => {
-                const dt = await CallBuscaEpi(epi.id_EPIs);
                 return {
                     id: epi.id,
-                    nome_epi: dt.nome_epi,
+                    nome_epi: epi.Epi,
                     validade: epi.data_vencimento
                 };
             });
-
+            console.log(data);
             const episData = await Promise.all(episDataPromises);
 
             return episData
@@ -83,7 +82,7 @@ const Lista_EPIs = ({ navigation, route }) => {
         setEpisLista(sortedEpis);
     };
 
-    const renderizarItem = ({ item }) => {
+    const renderizarItem = ({ item }) => {  
         let validade = route.params.userOnly ? item.validade : `${item.validade} dias`
 
         if (route.params.userOnly) {
@@ -175,13 +174,16 @@ const Lista_EPIs = ({ navigation, route }) => {
 
             <View style={styles.container} >
                 <View style={[styles.cell, { borderBottomWidth: 1, borderColor: corSecundaria }]}>
-                    <Text > Colaboradores {EpisListaTotal.length} </Text>
-
-                    <TouchableOpacity onPress={() => {
-                        navigation.navigate('Cad_EPIs', { colaborador : route.params.contribuidor })
-                    }}>
-                        <MaterialIcons name="add-circle" size={20} color={corPrincipal} />
-                    </TouchableOpacity>
+                    <Text > EPIs {EpisListaTotal.length} </Text>
+                    {
+                        !route.params.userOnly ? (
+                            <TouchableOpacity onPress={() => {
+                                navigation.navigate('Cad_EPIs', { colaborador: route.params.contribuidor })
+                            }}>
+                                <MaterialIcons name="add-circle" size={20} color={corPrincipal} />
+                            </TouchableOpacity>
+                        ) : null
+                    }
                 </View>
 
                 <View style={[styles.cell, { borderBottomWidth: 1, borderColor: corSecundaria }]} >
@@ -197,33 +199,30 @@ const Lista_EPIs = ({ navigation, route }) => {
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
                     <TouchableOpacity
-                        style={styles.botao}
                         onPress={() => {
                             if (currentPage > 1) {
                                 setCurrentPage(currentPage - 1)
                             }
                         }}
                     >
-                        <MaterialIcons name="arrow-back-ios" size={35} color={corBranco} />
+                        <MaterialIcons name="arrow-back-ios" size={35} color={corPrincipal} />
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.botao}
                         onPress={() => {
                             buscarEpis()
                             LoadList()
                         }}
                     >
-                        <MaterialIcons name="refresh" size={35} color={corBranco} />
+                        <MaterialIcons name="refresh" size={35} color={corPrincipal} />
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.botao}
                         onPress={() => {
                             if (EpisLista.length > itemsPerPage) {
                                 setCurrentPage(currentPage + 1)
                             }
                         }}
                     >
-                        <MaterialIcons name="arrow-forward-ios" size={35} color={corBranco} />
+                        <MaterialIcons name="arrow-forward-ios" size={35} color={corPrincipal} />
                     </TouchableOpacity>
                 </View>
 
@@ -249,15 +248,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 5,
         backgroundColor: corBranco,
-        borderRadius: 10
-    },
-    botao: {
-        backgroundColor: corPrincipal,
-        width: 45,
-        height: 45,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 5,
         borderRadius: 10
     }
 

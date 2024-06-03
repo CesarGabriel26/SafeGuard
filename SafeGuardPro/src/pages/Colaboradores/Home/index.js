@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { ImageBackground, View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native'
-import { CallBuscaEpi, CallBuscaEpiPorColaborador, CallGetNotificacoes } from "../../../components/api_call"
+import { CallBuscaEpi, CallBuscaEpiPorColaborador, CallCriarNotificacoes, CallGetNotificacoes } from "../../../components/api_call"
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import * as Animar from 'react-native-animatable'
 
@@ -9,7 +9,7 @@ import { corPreto, corBranco, ScreenPadding, meusEstilos, corSecundaria, corPrin
 const Home = ({ navigation, route }) => {
     const [episVeinculados, setEpisVeinculados] = useState([])
     const [notificacoes, setNotificacoes] = useState([])
-    const { contribuidor } = route.params
+    const { contribuidor, acesso } = route.params
 
     const buscarEpis = async () => {
         try {
@@ -81,16 +81,8 @@ const Home = ({ navigation, route }) => {
     }
 
     const renderizarItemNotificacao = ({ item }) => {
-        let icon = "error"
-        let color = "red"
-
-        if (item.descricao.includes("Novo")) {
-            icon = "warning"
-            color = corPrincipal
-        } else if (item.descricao.includes("Requisição")) {
-            icon = "add-circle"
-            color = "green"
-        }
+        let icon = "warning"
+        let color = corPrincipal
 
         return (
             <View style={[styles.cell, styles.cellType2]}>
@@ -103,6 +95,7 @@ const Home = ({ navigation, route }) => {
     useEffect(() => {
         buscarEpis()
         buscarNotificacoes()
+        CallCriarNotificacoes()
     },[])
 
     return (
@@ -112,7 +105,7 @@ const Home = ({ navigation, route }) => {
             style={meusEstilos.ScreenBody}
         >
             <View style={styles.cell}>
-                <Text > Colaborador: </Text>
+                <Text > {acesso}: </Text>
                 <Text > {contribuidor.nome} </Text>
             </View>
 

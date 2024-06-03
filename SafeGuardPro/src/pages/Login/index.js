@@ -1,23 +1,39 @@
 import React, { useState } from "react"
-import { ImageBackground, View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native'
+import { ImageBackground, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
 import * as Animar from 'react-native-animatable'
 import { Picker } from '@react-native-picker/picker';
 import { corPrincipal, corBranco, corTitulo, meusEstilos } from "../../styles/meusEstilos"
 import { CallLogin } from "../../components/api_call";
+import Checkbox from "expo-checkbox"
+// import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const Login = ({ navigation }) => {
-    const [tipoAcesso, setTipoAcesso] = useState('vendedor')
+    const [tipoAcesso, setTipoAcesso] = useState('Colaborador')
     const [Usuario, setUsuario] = useState("Pimentinha@safenet.com")
     const [Senha, setSenha] = useState("1234")
 
-    const [MensagemLogin, setMensagemLogin] = useState('')
+    const [manterConectado, setmanterConectado] = useState(false)
 
     const login = async () => {
         let Contribuidor = await CallLogin(Usuario, Senha)
 
         if (Contribuidor) {
-            navigation.navigate('BottomNav', {contribuidor : Contribuidor})
+            if (Contribuidor.cargo == tipoAcesso) {
+                
+                finalizarLogin(Contribuidor)
+            } else {
+                Alert.alert("Este colaborador não possui esse tipo de acesso")
+                alert("Este colaborador não possui esse tipo de acesso")
+            }
         }
+    }
+
+    const finalizarLogin = async (json) => {
+        // if (manterConectado) {
+        //     await AsyncStorage.setItem("UsuarioLogado", JSON.stringify(json))
+        // }
+
+        navigation.navigate('BottomNav', { contribuidor: json, acesso: tipoAcesso })
     }
 
     return (
@@ -29,6 +45,7 @@ const Login = ({ navigation }) => {
                 <Text style={styles.headerText}>Bem-vindo(a) </Text>
             </Animar.View>
             <Animar.View animation={'fadeInUp'} style={meusEstilos.conteudoCorpo}>
+
                 <Text style={styles.label}> Email:</Text>
                 <TextInput
                     placeholder="Digite seu Email..."
@@ -45,10 +62,23 @@ const Login = ({ navigation }) => {
                     onChangeText={setSenha}
                 />
 
-                <Text>{MensagemLogin}</Text>
+                <Text style={styles.label}> Cargo:</Text>
+                <Picker
+                    selectedValue={tipoAcesso}
+                    onValueChange={setTipoAcesso}
+                    style={styles.inputLogin}
+                >
+                    <Picker.Item label="Colaborador" value="Colaborador" />
+                    <Picker.Item label="Administrador" value="Administrador" />
+                </Picker>
 
-                <TouchableOpacity style={[meusEstilos.botao, {backgroundColor : corPrincipal}]} onPress={login}>
-                    <Text style={[meusEstilos.textoBotao, {color: corBranco}]}> Acessar </Text>
+                <View style={{ flexDirection: 'row', marginVertical: 5 }}>
+                    <Checkbox value={manterConectado} onChange={setmanterConectado} />
+                    <Text>Permanecer conectado</Text>
+                </View>
+
+                <TouchableOpacity style={[meusEstilos.botao, { backgroundColor: corPrincipal }]} onPress={login}>
+                    <Text style={[meusEstilos.textoBotao, { color: corBranco }]}> Acessar </Text>
                 </TouchableOpacity>
             </Animar.View>
         </ImageBackground>
@@ -61,7 +91,7 @@ const styles = StyleSheet.create({
         marginBottom: '8%',
         paddingStart: '5%',
         flexDirection: 'row',
-        justifyContent:'center',
+        justifyContent: 'center',
         alignItems: 'center'
     },
     headerText: {
@@ -70,8 +100,8 @@ const styles = StyleSheet.create({
         color: corBranco
     },
     logo: {
-        width: 30,
-        height: 30,
+        width: 70,
+        height: 70,
         marginRight: 20
     },
     picker: {

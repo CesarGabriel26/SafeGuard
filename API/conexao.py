@@ -6,7 +6,14 @@ def criar_conexao():
         user="root",
         password="1234",
         database="SafeGuardPro"
-    )
+        # user="senaiDev", 
+        # password="D3vandradina", 
+        # host="safeguardprocom.mysql.database.azure.com", 
+        # port=3306, 
+        # database="safeguardpro", 
+        # ssl_ca="{ca-cert filename}", 
+        # ssl_disabled=False
+)
 
 def fechar_conexao(conexao):
     if conexao:

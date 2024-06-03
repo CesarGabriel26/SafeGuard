@@ -5,6 +5,7 @@ import { corPrincipal, corBranco, corTitulo, meusEstilos } from "../../../styles
 import { Cadastrar_EditarEpi, CallBuscarColaboradores, CallListColaboradores, DeletarEPI } from "../../../components/api_call";
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import Veincular from "../../../components/modal_veincular";
+import { Picker } from '@react-native-picker/picker';
 
 const Cad_EPIs = ({ navigation, route }) => {
     const [ModalVeincular, setModalVeincular] = useState(false);
@@ -42,6 +43,7 @@ const Cad_EPIs = ({ navigation, route }) => {
 
             let resp = await DeletarEPI(Id)
             Alert.alert(resp.message)
+            alert(resp.message)
             navigation.goBack()
 
         } catch (error) {
@@ -71,9 +73,9 @@ const Cad_EPIs = ({ navigation, route }) => {
                         <Image resizeMode="stretch" style={{ width: '100%', height: '100%' }} source={require('../../../assets/ProjetoEPI_voltar.png')} />
                     </TouchableOpacity>
                     {
-                        route.params ? (
+                        route.params.epi ? (
                             <TouchableOpacity style={styles.botao2} onPress={Deletar}>
-                                <MaterialIcons name="delete" size={20} color={corBranco} />
+                                <MaterialIcons name="delete" size={25} color={corBranco} />
                             </TouchableOpacity>
                         ) : null
                     }
@@ -94,12 +96,19 @@ const Cad_EPIs = ({ navigation, route }) => {
 
                     <View>
                         <Text>Categoria:</Text>
-                        <TextInput
-                            placeholder="Categoria..."
+                        <Picker
+                            selectedValue={Categoria}
+                            onValueChange={setCategoria}
                             style={styles.inputLogin}
-                            value={Categoria}
-                            onChangeText={setCategoria}
-                        />
+                        >
+                            <Picker.Item label="Proteção da cabeça" value="proteção da cabeça" />
+                            <Picker.Item label="Proteção ocular e facial" value="Proteção ocular e facial" />
+                            <Picker.Item label="Proteção respiratória" value="proteção respiratória" />
+                            <Picker.Item label="Proteção auricular" value="proteção auricular" />
+                            <Picker.Item label="Proteção das mãos e braços" value="proteção das mãos e braços" />
+                            <Picker.Item label="Proteção dos pés e pernas" value="proteção dos pés e pernas" />
+                            <Picker.Item label="Proteção do corpo" value="proteção do corpo" />
+                        </Picker>
                     </View>
 
                     <View>

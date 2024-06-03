@@ -1,6 +1,5 @@
 const cargosAutorizados = [
-    "diretor",
-    "administrador"
+    "Administrador"
 ]
 
 const IP = "http://192.168.0.107:5000"
@@ -147,7 +146,7 @@ async function DeletarColaborador(id) {
 async function CallBuscaEpiPorColaborador(id) {
 
     try {
-        const resp = await fetch(`${IP}/colab_epi/buscarPcolaborador/${id}`, {
+        const resp = await fetch(`${IP}/colab_epi/obterPorColab/${id}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
         });
@@ -166,9 +165,9 @@ async function CallBuscaEpiPorColaborador(id) {
     }
 }
 
-async function Cadastrar_EditarRelacao(Data, id, alterarExistente) {
-    const method = alterarExistente ? "PUT" : "POST"
-    const link = alterarExistente ? `${IP}/colab_epi/alterar/${id}` : `${IP}/colab_epi/add`
+async function Cadastrar_EditarRelacao(Data) {
+    const method = "POST"
+    const link = `${IP}/colab_epi/incluir`
 
     try {
         const resp = await fetch(link, {
@@ -308,8 +307,29 @@ async function DeletarEPI(id) {
 
 async function CallGetNotificacoes(id) {
     try {
-        const resp = await fetch(`${IP}/notificacao/buscarPcolaborador/${id}`, {
+        const resp = await fetch(`${IP}/notificacao/obter/${id}`, {
             method: "GET",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        if (!resp.ok) {
+            throw new Error('Erro ao buscar epis');
+        }
+
+        const data = await resp.json();
+
+        return data;
+
+    } catch (error) {
+        console.error('Erro na requisição de Epis:', error);
+        throw error;
+    }
+}
+
+async function CallCriarNotificacoes() {
+    try {
+        const resp = await fetch(`${IP}/notificacao/gerarNotificacao`, {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
         });
 
@@ -346,5 +366,7 @@ export {
     DeletarColaborador,
 
     CallGetNotificacoes,
+    CallCriarNotificacoes,
+    
     Cadastrar_EditarRelacao
 }

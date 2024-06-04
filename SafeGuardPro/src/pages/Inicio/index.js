@@ -1,16 +1,32 @@
-import React from "react"
+import React, {useState, useEffect} from "react"
 import { ImageBackground, View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import * as Animar from 'react-native-animatable'
 import { corPrincipal, corBranco, corTitulo, meusEstilos } from "../../styles/meusEstilos"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 
 const Inicio = ({ navigation }) => {
+
+    const [logo, setLogo] = useState('');
+
+    useEffect(() => {
+        const getLogo = async () => {
+            let data = await AsyncStorage.getItem("Logo");
+            if (data == '2') {
+                setLogo(require('../../assets/logo2.png'));
+            } else {
+                setLogo(require('../../assets/logo.png')); // fallback para o logo padrão
+            }
+        };
+
+        getLogo();
+    }, []);
 
     return (
         <ImageBackground source={require('../../assets/bg.png')} resizeMode="cover" style={meusEstilos.conteudoHeader}>
             <View style={styles.logo}>
                 <Animar.Image
-                    source={require('../../assets/logo.png')}
+                    source={logo}
                     animation='zoomIn'
                     style={{ width: 250 }}
                     resizeMode="contain"

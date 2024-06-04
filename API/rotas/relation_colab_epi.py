@@ -54,6 +54,14 @@ def incluirRelacao():
             novaRelacao['id_EPIs'], 
             novaRelacao['id_colaborador_supervisor']
         ))
+        
+        #notificação, novo epi vencuilado
+        
+        comando = "insert into notificacoes (id_colaboradores, id_epi, descricao, tipo) value (%s,%s,%s, 'new')"
+        descricao = f'Novo EPI foi veinculado a voce'
+        cursor.execute(comando, (novaRelacao['id_colaborador'], novaRelacao['id_EPIs'], descricao, ))
+        
+        
         # Confirmando a transação no banco de dados
         conexao.commit()
         # Retornando um status de sucesso em formato JSON

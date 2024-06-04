@@ -178,13 +178,10 @@ def deletarColaborador(id):
 
 @colaboradores_bp.route('/login', methods=['POST'])
 def login(): 
-    conexao = None
-    cursor = None
+    conexao = criar_conexao()
+    cursor = conexao.cursor(dictionary=True)
 
     try:
-        conexao = criar_conexao()
-        cursor = conexao.cursor(dictionary=True)
-
         dados_login = request.get_json()
         
         if CheckValueNotIn(["email", "senha"], dados_login):

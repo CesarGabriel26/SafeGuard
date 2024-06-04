@@ -11,6 +11,8 @@ create table EPIs(
     foto varchar(1500) not null
 );
 
+drop table colaboradores;
+
 create table colaboradores(
 	id int primary key auto_increment,
     nome varchar(100) not null,
@@ -24,14 +26,17 @@ create table colaboradores(
     nr varchar(20) not null,
     bairro varchar(50) not null,
     cidade varchar(50) not null,
-    estado varchar(50) not null
+    estado varchar(50) not null,
+    foto varchar(1500) not null
 );
+
 
 create table notificacoes(
 	id int primary key auto_increment,
     descricao varchar(500) not null,
 	id_colaboradores int,
-    id_epi int
+    id_epi int,
+    tipo varchar(255)
 );
 
 create table colaborador_EPIs(
@@ -48,7 +53,8 @@ create table colaborador_EPIs(
 
 insert into EPIs (nome_epi, validade, descricao, categoria, foto) value ('óculos', 365, 'óculos de proteção que não queima teus olhisnhos', 'Óculos de proteção para risco biológico', 'https://images.tcdn.com.br/img/img_prod/916304/oculos_de_protecao_individual_epi_6921_1_ceac46bb3f7763c1ae802b0a43eaac09.jpg');
 
-insert into colaboradores (nome, email, senha, setor, cpf, cargo, cep, endereco, nr, bairro, cidade, estado) value ('Carlos', 'CarlosDaniel@gmail.com', 10122233, 'administração', 46832494668, 'diretor', 106220145, 'espiritu santo', 28, 'alvares cabral', 'andradina', 'sao paulo');
+insert into colaboradores (nome, email, senha, setor, cpf, cargo, cep, endereco, nr, bairro, cidade, estado, foto) value ('Carlos', 'CarlosDaniel@gmail.com', 1234, 'administração', 46832494668, 'diretor', 106220145, 'espiritu santo', 28, 'alvares cabral', 'Andradina', 'SP', 'https://i.imgflip.com/7jv8bd.png?a476688');
+insert into colaboradores (nome, email, senha, setor, cpf, cargo, cep, endereco, nr, bairro, cidade, estado, foto) value ("Pimentinha", "pimentinha@safenet.com", 1234, "produção", 78952465877, "Administrador", 16900408, "Rua Alagoas", 2587, "Benfica", "Andradina", "SP", 'https://images7.memedroid.com/images/UPLOADED680/5f4c53ee35359.jpeg');
 
 insert into notificacoes (descricao, id_colaboradores, id_epi) value ('Novo EPI veinculado a voce', 2, 1);
 	
@@ -88,3 +94,6 @@ select * from colaboradores;
 select * from notificacoes;
 
 select * from colaborador_EPIs;
+
+DELETE FROM colaborador_EPIs WHERE id = 2;
+

@@ -24,7 +24,8 @@ const Cadastro = ({ navigation, route }) => {
     const [Bairro, setBairro] = useState("")
     const [Cidade, setCidade] = useState("")
     const [Estado, setEstado] = useState("")
-
+    const [foto, setfoto] = useState("")
+    
     const BuscarEndereco = async () => {
         // Remova os pontos e traços do CEP para contar apenas os dígitos
         const cepLimpo = Cep.replace(/\D/g, ''); // Remove tudo exceto os dígitos
@@ -57,7 +58,8 @@ const Cadastro = ({ navigation, route }) => {
             "nome": Usuario,
             "nr": Nr,
             "senha": Senha,
-            "setor": tipoAcesso
+            "setor": tipoAcesso,
+            "foto": foto
         }
 
         for (const key in data) {
@@ -111,6 +113,7 @@ const Cadastro = ({ navigation, route }) => {
             setBairro(colaborador.bairro)
             setCidade(colaborador.cidade)
             setEstado(colaborador.estado)
+            setfoto(colaborador.foto)
         }
 
         console.log(Id);
@@ -279,6 +282,17 @@ const Cadastro = ({ navigation, route }) => {
                         />
                     </View>
 
+                    <View>
+                        <Text>Foto:</Text>
+                        <TextInput
+                            placeholder="Foto..."
+                            style={styles.inputLogin}
+                            value={foto}
+                            onChangeText={setfoto}
+                        />
+                    </View>
+
+                    <Image source={{uri: foto}} style={{ width: '100%', height: 200 }} />
 
                 </ScrollView>
 

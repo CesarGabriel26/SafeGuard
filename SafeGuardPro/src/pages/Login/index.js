@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { ImageBackground, View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
 import * as Animar from 'react-native-animatable'
 import { Picker } from '@react-native-picker/picker';
@@ -35,6 +35,19 @@ const Login = ({ navigation }) => {
 
         navigation.navigate('BottomNav', { contribuidor: json, acesso: tipoAcesso })
     }
+
+    const checarUsuarioLogado = async () => {
+        let data = await AsyncStorage.getItem("UsuarioLogado")
+        if (data) {
+            data = JSON.parse(data)
+
+            navigation.navigate('BottomNav', { contribuidor: data, acesso: data.cargo })
+        }
+    }
+
+    useEffect(() => {
+        checarUsuarioLogado()
+    },[])
 
     return (
         <ImageBackground source={require('../../assets/bg.png')} resizeMode="cover" style={meusEstilos.conteudoHeader}>

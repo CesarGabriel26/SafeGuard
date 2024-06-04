@@ -5,12 +5,6 @@ from conexao import criar_conexao, fechar_conexao
 notificacao_bp = Blueprint('notificacao', __name__)
 dados_necessarios = ["descricao", "id_colaboradores", "id_epi"]
 
-def CheckValueNotIn(keys = [], obj = {}):
-    for i in keys:
-        if i not in obj:
-            return True
-    return False
-
 #@ notificacoes -> descricao, id_colaboradores, id_epi
 
 @notificacao_bp.route('/gerarNotificacao', methods=['POST'])
@@ -30,8 +24,9 @@ def gerarNotificacao():
     )
     
     dados = cursor.fetchall()
+    
     for item in dados:
-        comando = "insert into notificacoes (id_colaboradores, id_epi, descricao) value (%s,%s,%s)"
+        comando = "insert into notificacoes (id_colaboradores, id_epi, descricao, tipo) value (%s,%s,%s, 'warning')"
         descricao = f'Seu EPI {item.nome_epi} vence no dia {item.data_vencimento} solicite um novo com seu supervisor'
         cursor.execute(comando, (item.id_colaborador, item.id_EPIs, descricao, ))
         

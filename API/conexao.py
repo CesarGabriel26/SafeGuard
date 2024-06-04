@@ -6,6 +6,7 @@ def criar_conexao():
         user="root",
         password="1234",
         database="SafeGuardPro"
+        
         # user="senaiDev", 
         # password="D3vandradina", 
         # host="safeguardprocom.mysql.database.azure.com", 

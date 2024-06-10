@@ -97,3 +97,10 @@ select * from colaborador_EPIs;
 
 DELETE FROM colaborador_EPIs WHERE id = 2;
 
+DELIMITER //
+CREATE TRIGGER `colaboradores_epis_BEFORE_INSERT` BEFORE INSERT ON colaborador_EPIs FOR EACH ROW BEGIN
+declare dias_vencimento int;
+select validade into dias_vencimento from EPIs where id = new.id_EPIs;
+set new.data_vencimento = current_date() + interval dias_vencimento day;
+end //
+DELIMITER ;

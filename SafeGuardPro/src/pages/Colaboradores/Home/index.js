@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { ImageBackground, View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native'
 import { CallBuscaEpi, CallBuscaEpiPorColaborador, CallCriarNotificacoes, CallGetNotificacoes } from "../../../components/api_call"
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
-import * as Animar from 'react-native-animatable'
+import * as Notifications from "expo-notifications"
 
 import { corPreto, corBranco, ScreenPadding, meusEstilos, corSecundaria, corPrincipal } from "../../../styles/meusEstilos"
 
@@ -14,16 +14,15 @@ const Home = ({ navigation, route }) => {
     const buscarEpis = async () => {
         try {
             const data = await CallBuscaEpiPorColaborador(contribuidor.id);
-    
+            console.log(data);
             const episDataPromises = data.map(async (epi, i) => {
-                const dt = await CallBuscaEpi(epi.id_EPIs);
-                 return {
-                    id: epi.id,
-                    nome: dt.nome_epi,
-                    validade: epi.data_vencimento
+                return {
+                    id: epi.id_epi,
+                    nome: epi.Epi,
+                    validade: epi.validade
                 };
             });
-    
+
             const episData = await Promise.all(episDataPromises);
 
             setEpisVeinculados(episData);
@@ -33,8 +32,7 @@ const Home = ({ navigation, route }) => {
     };
 
     const renderizarItemEPI = ({ item }) => {
-        console.log(item);
-        
+
         const hoje = new Date();
         const validade = new Date(item.validade);
         const diferencaEmDias = Math.ceil((validade - hoje) / (1000 * 60 * 60 * 24));
@@ -47,7 +45,7 @@ const Home = ({ navigation, route }) => {
         } else {
             const diferencaEmMeses = Math.ceil(diferencaEmDias / 30);
             const diferencaEmAnos = Math.floor(diferencaEmMeses / 12);
-    
+
             if (diferencaEmDias < 30) {
                 mensagemValidade = `Vence em ${diferencaEmDias} dia(s)`;
             } else if (diferencaEmMeses < 12) {
@@ -61,7 +59,7 @@ const Home = ({ navigation, route }) => {
             }
         }
 
-        
+        console.log(item);
 
         return (
             <TouchableOpacity onPress={() => navigation.navigate('ExibirEPI', { epi: item })} style={[styles.cell, styles.cellType2]}>
@@ -75,13 +73,18 @@ const Home = ({ navigation, route }) => {
         try {
             const data = await CallGetNotificacoes(contribuidor.id);
             setNotificacoes(data)
+
+            // data.forEach(notificacao => {
+            //     criarNotificacaoLocal(notificacao.tipo,notificacao.descricao)
+            // });
+
         } catch (error) {
             console.error('Erro ao buscar EPIS:', error);
         }
     }
 
     const renderizarItemNotificacao = ({ item }) => {
-        let icon = "warning"
+        let icon = item.tipo == 'new'? "add-circle" : "warning"
         let color = corPrincipal
 
         return (
@@ -92,11 +95,24 @@ const Home = ({ navigation, route }) => {
         );
     };
 
+    const criarNotificacaoLocal = async (title, body) => {
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: title,
+                body: body,
+                data: {}
+            },
+            trigger: {
+                seconds: 5
+            }
+        })
+    }
+
     useEffect(() => {
         buscarEpis()
         buscarNotificacoes()
         CallCriarNotificacoes()
-    },[])
+    }, [])
 
     return (
         <ImageBackground
@@ -118,7 +134,7 @@ const Home = ({ navigation, route }) => {
                 </View>
 
                 <FlatList
-                    data={episVeinculados} 
+                    data={episVeinculados}
                     renderItem={renderizarItemEPI}
                     keyExtractor={(item) => item.id.toString()}
                 />
@@ -133,9 +149,9 @@ const Home = ({ navigation, route }) => {
                 </View>
 
                 <FlatList
-                    data={notificacoes} 
+                    data={notificacoes}
                     renderItem={renderizarItemNotificacao}
-                    keyExtractor={(item) => item.id.toString()} 
+                    keyExtractor={(item) => item.id.toString()}
                 />
             </View>
 
@@ -148,8 +164,8 @@ const styles = StyleSheet.create({
         padding: 5,
         backgroundColor: corBranco,
         borderRadius: 10,
-        flex : 1,
-        gap : 5
+        flex: 1,
+        gap: 5
     },
     cell: {
         flexDirection: 'row',
@@ -159,8 +175,8 @@ const styles = StyleSheet.create({
         backgroundColor: corBranco,
         borderRadius: 10
     },
-    cellType2 : {
-        borderBottomWidth: 1, 
+    cellType2: {
+        borderBottomWidth: 1,
         borderColor: corSecundaria,
     },
     nomeEPI: {

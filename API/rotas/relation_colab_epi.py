@@ -11,7 +11,8 @@ def obterEpiPorColaborador(id_cliente):
     consulta = """
         select 
             Ce.id, 
-            E.nome_epi as Epi, 
+            E.nome_epi as Epi,
+            E.id as id_epi, 
             c.nome as Colaborador, 
             Cs.nome as Administrador, 
             date_format(Ce.data_EPI, '%d/%m/%y') as data_EPI,

@@ -47,7 +47,6 @@ const Lista_EPIs = ({ navigation, route }) => {
                     validade: epi.data_vencimento
                 };
             });
-            console.log(data);
             const episData = await Promise.all(episDataPromises);
 
             return episData

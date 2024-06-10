@@ -5,3 +5,5 @@
 azure-functions
 flask
 flask_cors
+mysql.connector
+Blueprint

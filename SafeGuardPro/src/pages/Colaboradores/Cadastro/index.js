@@ -25,7 +25,7 @@ const Cadastro = ({ navigation, route }) => {
     const [Cidade, setCidade] = useState("")
     const [Estado, setEstado] = useState("")
     const [foto, setfoto] = useState("")
-    
+
     const BuscarEndereco = async () => {
         // Remova os pontos e traços do CEP para contar apenas os dígitos
         const cepLimpo = Cep.replace(/\D/g, ''); // Remove tudo exceto os dígitos
@@ -116,7 +116,6 @@ const Cadastro = ({ navigation, route }) => {
             setfoto(colaborador.foto)
         }
 
-        console.log(Id);
 
     }, [])
 
@@ -213,12 +212,14 @@ const Cadastro = ({ navigation, route }) => {
 
                     <View>
                         <Text>Cargo:</Text>
-                        <TextInput
-                            placeholder="Cargo..."
+                        <Picker
+                            selectedValue={Cargo}
+                            onValueChange={setCargo}
                             style={styles.inputLogin}
-                            value={Cargo}
-                            onChangeText={setCargo}
-                        />
+                        >
+                            <Picker.Item label="Colaborador" value="Colaborador" />
+                            <Picker.Item label="Administrador" value="Administrador" />
+                        </Picker>
                     </View>
 
                     <View>
@@ -292,7 +293,7 @@ const Cadastro = ({ navigation, route }) => {
                         />
                     </View>
 
-                    <Image source={{uri: foto}} style={{ width: '100%', height: 200 }} />
+                    <Image source={{ uri: foto }} style={{ width: '100%', height: 200 }} />
 
                 </ScrollView>
 

@@ -11,7 +11,7 @@ def criar_conexao():
         # password="D3vandradina", 
         # host="safeguardprocom.mysql.database.azure.com", 
         # port=3306, 
-        # database="safeguardpro", 
+        # database="SafeGuardPro", 
         # ssl_ca="{ca-cert filename}", 
         # ssl_disabled=False
 )

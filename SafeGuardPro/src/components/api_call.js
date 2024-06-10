@@ -2,7 +2,7 @@ const cargosAutorizados = [
     "Administrador"
 ]
 
-const IP = "http://192.168.0.107:5000"
+const IP = "http://192.168.0.107:5000" // "safeguardprocom.azurewebsites.net" //"http://192.168.0.107:5000"
 
 //! Colaborador
 

@@ -54,7 +54,6 @@ export default function Veincular({ Visibility, SetVisibility, NomeEPI, IdEpi, c
                 "id_colaborador_supervisor": currentUser
             })
 
-            console.log(data);
             Alert.alert('EPI Veinculado');
             alert('EPI Veinculado')
 

@@ -21,33 +21,24 @@ const Settings = ({ navigation, route }) => {
         <ImageBackground source={require('../../../assets/bg.png')} resizeMode="cover" style={meusEstilos.ScreenBody}>
 
             <View style={styles.cell}>
-                <View style={styles.cell2}>
-                    <View style={styles.cell}>
+                <View style={{ flexDirection: 'row', width: "100%",justifyContent: 'space-between'}}>
+                    <View style={{ flexDirection: 'row' }} >
                         <Image resizeMode="cover" style={{ width: 50, height: 50, borderRadius: '50%' }} source={{ uri: Pfp }} />
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                            <View style={[styles.cell2, {justifyContent: 'space-between', alignItems: 'flex-start'}]}>
-                                <Text>Nome: {route.params.contribuidor.nome}</Text>
-                                <Text>Cargo:{route.params.contribuidor.cargo}</Text>
-                            </View>
-
-                            <View style={styles.logout}>
-
-                                <TouchableOpacity style={styles.cell} onPress={async () => {
-                                    await AsyncStorage.removeItem('UsuarioLogado')
-                                    navigation.navigate("Login")
-                                }}>
-                                    <MaterialIcons name={'logout'} size={IconSize} color={corPrincipal} />
-                                </TouchableOpacity>
-                            </View>
-
+                        <View style={[styles.cell2, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
+                            <Text>Nome: {route.params.contribuidor.nome}</Text>
+                            <Text>Cargo:{route.params.contribuidor.cargo}</Text>
                         </View>
                     </View>
-                    {/* <View style={[styles.cell2, { alignItems: 'flex-start', justifyContent: 'center' }]}>
-                        <View style={{ flexDirection: 'row', width: '100%' }}><Text>Email:</Text>{route.params.contribuidor.email}</View>
-                        <View style={{ flexDirection: 'row', width: '100%' }}><Text>Setor:</Text>{route.params.contribuidor.setor}</View>
-                    </View> */}
-                </View>
 
+                    <View style={styles.logout}>
+                        <TouchableOpacity style={styles.cell} onPress={async () => {
+                            await AsyncStorage.removeItem('UsuarioLogado')
+                            navigation.navigate("Login")
+                        }}>
+                            <MaterialIcons name={'logout'} size={IconSize} color={corPrincipal} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
             </View>
 
             <View style={styles.cell}>

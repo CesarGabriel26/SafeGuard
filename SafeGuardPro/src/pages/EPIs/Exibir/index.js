@@ -19,6 +19,8 @@ const ExibirEPI = ({ navigation, route }) => {
 
             let data = await CallBuscaEpi(epi.id)
 
+            console.log(epi.id, data);
+
             setNome(data.nome_epi)
             setCategoria(data.categoria)
             setDescricao(data.descricao)
@@ -41,8 +43,8 @@ const ExibirEPI = ({ navigation, route }) => {
                     <View style={[styles.cell, { flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start' }]}>
                         <View style={styles.cell}>
                             <Text>Nome:</Text>
-                            <Text>{Nome}</Text>
-                        </View>
+                            <Text numberOfLines={1} >{Nome}</Text>
+                          </View>
 
                         <View style={styles.cell}>
                             <Text>Categoria:</Text>

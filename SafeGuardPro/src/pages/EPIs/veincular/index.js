@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Alert, View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList, ScrollView } from "react-native";
+import { ImageBackground, Alert, View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList, ScrollView } from "react-native";
 
-import { corBranco, corPrincipal, meusEstilos } from "../styles/meusEstilos";
-import { CallBuscarColaboradores, CallListColaboradores, Cadastrar_EditarRelacao } from "./api_call";
+import { corBranco, corPrincipal, meusEstilos } from "../../../styles/meusEstilos";
+import { CallBuscarColaboradores, CallListColaboradores, Cadastrar_EditarRelacao } from "../../../components/api_call";
 
-export default function Veincular({ Visibility, SetVisibility, NomeEPI, IdEpi, currentUser }) {
+export default function Veincular({ navigation, route }) {
     const [selectedUser, setSelectedUser] = useState(null);
     const [selectedUserName, setSelectedUserName] = useState("");
     const [colaboradores, setColaboradores] = useState([]);
     const [inputPesquisa, setInputPesquisa] = useState("");
+    const [usuarioLogado,setUsuarioLogado] = useState('')
+
+    useEffect(()=>{
+        setUsuarioLogado(route.params.currentUser)
+    })
 
     const buscarColaboradores = async () => {
         try {
@@ -49,33 +54,24 @@ export default function Veincular({ Visibility, SetVisibility, NomeEPI, IdEpi, c
         try {
 
             let data = await Cadastrar_EditarRelacao({
-                "id_EPIs": IdEpi,
+                "id_EPIs": route.params.IdEpi,
                 "id_colaborador": selectedUser,
-                "id_colaborador_supervisor": currentUser
+                "id_colaborador_supervisor": usuarioLogado
             })
 
             Alert.alert('EPI Veinculado');
             alert('EPI Veinculado')
 
-            SetVisibility(!Visibility);
+            navigation.goBack()
         } catch (error) {
-            
+
         }
 
     }
 
     return (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={Visibility}
-            onRequestClose={() => {
-                Alert.alert('Operação cancelada');
-                alert('Operação cancelada')
-                SetVisibility(!Visibility);
-            }}
-        >
-            <View style={[meusEstilos.ScreenBody, { backgroundColor: 'transparent' }]}>
+        <ImageBackground source={require('../../../assets/bg.png')} resizeMode="cover" style={meusEstilos.ScreenBody}>
+            <View>
                 <View style={[meusEstilos.conteudoCorpo, { padding: 20, paddingTop: 20, borderRadius: 25, justifyContent: 'center' }]}>
                     <Text style={{ marginBottom: 15, textAlign: 'center' }}>Selecione um Colaborador</Text>
 
@@ -93,7 +89,7 @@ export default function Veincular({ Visibility, SetVisibility, NomeEPI, IdEpi, c
                     />
 
                     <View>
-                        <Text style={{ marginBottom: 15, textAlign: 'center' }}>Epi {NomeEPI} será vinculado a </Text>
+                        <Text style={{ marginBottom: 15, textAlign: 'center' }}>Epi {route.params.NomeEPI} será vinculado a </Text>
                         <Text style={{ marginBottom: 15, textAlign: 'center' }}>
                             {selectedUserName}
                         </Text>
@@ -101,7 +97,7 @@ export default function Veincular({ Visibility, SetVisibility, NomeEPI, IdEpi, c
 
                     <TouchableOpacity
                         style={[styles.botao, { backgroundColor: corPrincipal }]}
-                        onPress={() => SetVisibility(!Visibility)}
+                        onPress={() => navigation.goBack()}
                     >
                         <Text style={[meusEstilos.textoBotao, { color: corBranco }]}>
                             Cancelar
@@ -117,7 +113,7 @@ export default function Veincular({ Visibility, SetVisibility, NomeEPI, IdEpi, c
                     </TouchableOpacity>
                 </View>
             </View>
-        </Modal>
+        </ImageBackground>
     );
 }
 

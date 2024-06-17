@@ -81,18 +81,16 @@ def cadastrarEPIs():
         cursor.execute(comando, keys)
         
         conexao.commit()
-        status = {'status':'success', 'code': 201}
+        return jsonify({'status':'success', 'code': 201}), 201
         
     except Exception as e:
         conexao.rollback()
-        status = {'status': 'error', 'message': str(e)}
+        return jsonify({'status': 'error', 'message': str(e)})
         
     finally:
         cursor.close()
         fechar_conexao(conexao)
     
-    return jsonify(status)
-
 @Epis_bp.route('/alterar/<int:id>', methods=['PUT'])
 def alterarEPI(id):
     conexao = criar_conexao()
@@ -117,15 +115,16 @@ def alterarEPI(id):
         cursor.execute(comando,valores)
         conexao.commit()
 
-        status = {'status': 'success', 'message': 'colaborador_EPIs atualizado com sucesso'}
-        return jsonify(status)
+        return  jsonify({'status': 'success', 'message': 'epi atualizado com sucesso'}), 200
+        
     except Exception as e:
         conexao.rollback()
-        status = {'status': 'error', 'message': str(e)} 
+        return jsonify({'status': 'error', 'message': str(e)}), 200
 
     finally:
         cursor.close()
         fechar_conexao(conexao)
+    
 
 @Epis_bp.route('/deletar/<int:id>', methods=['DELETE'])
 def deletarEPI(id):

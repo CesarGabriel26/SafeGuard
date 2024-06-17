@@ -10,10 +10,10 @@ const Listar = ({ navigation }) => {
     const [colaboradoresLista, setColaboradoresLista] = useState([])
     const [colaboradoresListaTotal, setcolaboradoresListaTotal] = useState([])
 
-    const [currentOrganization, setCurrentOrganization] = useState('za');
+    const [currentOrganization, setCurrentOrganization] = useState('az');
     const [inputPesquisa, setInputPesquisa] = useState('');
 
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 10; // Número de itens por página
 
     const buscarColaboradores = async () => {
@@ -38,20 +38,20 @@ const Listar = ({ navigation }) => {
         // Filtrar e ordenar a lista com base no critério selecionado
         if (currentOrganization === 'az') {
             // Ordenar por nome A-Z
-            slicedColaboradores.sort((a, b) => b.nome.localeCompare(a.nome));
+            slicedColaboradores.sort((a, b) => b.nome.localeCompare(b.nome));
         } else if (currentOrganization === 'za') {
             // Ordenar por nome Z-A
-            slicedColaboradores.sort((a, b) => a.nome.localeCompare(b.nome));
+            slicedColaboradores.sort((a, b) => b.nome.localeCompare(a.nome));
         } else if (currentOrganization === 'setorAz') {
             // Ordenar por setor A-Z
-            slicedColaboradores.sort((a, b) => b.cargo.localeCompare(a.cargo));
+            slicedColaboradores.sort((a, b) => a.cargo.localeCompare(b.cargo));
         } else if (currentOrganization === 'setorZa') {
             // Ordenar por setor Z-A
-            slicedColaboradores.sort((a, b) => a.cargo.localeCompare(b.cargo));
+            slicedColaboradores.sort((a, b) => b.cargo.localeCompare(a.cargo));
         }
 
         // Paginação: calcular índices iniciais e finais
-        const startIndex = (currentPage - 1) * itemsPerPage;
+        const startIndex = currentPage * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
 
         // Aplicar a paginação na lista ordenada/filtrada
@@ -80,12 +80,12 @@ const Listar = ({ navigation }) => {
 
     useEffect(() => {
         LoadList();
-    }, [colaboradoresListaTotal, currentPage]);
+    }, [colaboradoresListaTotal, currentPage, currentOrganization]);
 
     return (
         <ImageBackground
             source={require('../../../assets/bg.png')}
-            resizeMode="cover"
+            resizeMode="stretch"
             style={meusEstilos.ScreenBody}
         >
 
@@ -106,18 +106,25 @@ const Listar = ({ navigation }) => {
                 >
                     <Picker.Item label="A-Z" value="az" />
                     <Picker.Item label="Z-A" value="za" />
-                    <Picker.Item label="Setor A-Z" value="setorAz" />
-                    <Picker.Item label="Setor Z-A" value="setorZa" />
+                    <Picker.Item label="Cargo A-Z" value="setorAz" />
+                    <Picker.Item label="Cargo Z-A" value="setorZa" />
                 </Picker>
             </View>
 
             <View style={styles.container} >
                 <View style={[styles.cell, { borderBottomWidth: 1, borderColor: corSecundaria }]}>
-                    <Text > Colaboradores {colaboradoresListaTotal.length} </Text>
+                    <Text >
+                        {colaboradoresListaTotal.length} Colaborador{colaboradoresListaTotal.length > 1 ? "es" : null} encontrado{colaboradoresListaTotal.length > 1 ? "s" : null}
+                    </Text>
 
                     <TouchableOpacity onPress={() => navigation.navigate('Cad_Colab')}>
                         <MaterialIcons name="add-circle" size={20} color={corPrincipal} />
                     </TouchableOpacity>
+                </View>
+
+                <View style={[styles.cell, { borderBottomWidth: 1, borderColor: corSecundaria }]} >
+                    <Text>Nome</Text>
+                    <Text>Cargo</Text>
                 </View>
 
                 <FlatList

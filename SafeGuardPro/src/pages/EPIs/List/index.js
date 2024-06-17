@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { ImageBackground, View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity } from 'react-native'
 import { corBranco, meusEstilos, corSecundaria, corPrincipal } from "../../../styles/meusEstilos"
-import { CallBuscaEpiPorNome, CallListEpi, CallBuscaEpiPorColaborador, CallBuscaEpi } from "../../../components/api_call"
+import { CallListEpi, CallBuscaEpiPorColaborador, CallBuscaEpiPorColaboradorEPorNome } from "../../../components/api_call"
 import { Picker } from '@react-native-picker/picker';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 
@@ -9,47 +9,35 @@ const Lista_EPIs = ({ navigation, route }) => {
     const [EpisLista, setEpisLista] = useState([])
     const [EpisListaTotal, setEpisListaTotal] = useState([])
 
-    const [currentOrganization, setCurrentOrganization] = useState('za');
+    const [currentOrganization, setCurrentOrganization] = useState('az');
     const [inputPesquisa, setInputPesquisa] = useState('');
 
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(0);
     const itemsPerPage = 10; // Número de itens por página
 
     const buscarEpis = async () => {
         try {
             let data = []
 
-            if (inputPesquisa == '') {
-                if (route.params.userOnly) {
-                    data = await buscarEpisVeinculados(route.params.contribuidor);
-                    data = data ? data : []
-                } else {
-                    data = await CallListEpi();
-                }
+            if (route.params.userOnly) {
+                data = await buscarEpisVeinculados(route.params.contribuidor, inputPesquisa) || []
+                data = data ? data : []
             } else {
-                data = await CallBuscaEpiPorNome(inputPesquisa);
+                data = await CallListEpi() || []
             }
-
+           
             setEpisListaTotal(data);
+
         } catch (error) {
             console.error('Erro ao buscar EPIs:', error);
         }
     };
 
-    const buscarEpisVeinculados = async (contribuidor) => {
+    const buscarEpisVeinculados = async (contribuidor, inputPesquisa) => {
         try {
-            const data = await CallBuscaEpiPorColaborador(contribuidor.id);
+            const data = (inputPesquisa == '') ? await CallBuscaEpiPorColaborador(contribuidor.id) : CallBuscaEpiPorColaboradorEPorNome(contribuidor.id,inputPesquisa)
 
-            const episDataPromises = data.map(async (epi, i) => {
-                return {
-                    id: epi.id,
-                    nome_epi: epi.Epi,
-                    validade: epi.data_vencimento
-                };
-            });
-            const episData = await Promise.all(episDataPromises);
-
-            return episData
+            return data
         } catch (error) {
             console.error('Erro ao buscar EPIS:', error);
         }
@@ -58,31 +46,31 @@ const Lista_EPIs = ({ navigation, route }) => {
     const LoadList = () => {
         let sortedEpis = [...EpisListaTotal]
 
+        // Paginação: calcular índices iniciais e finais
+        const startIndex = (currentPage) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        // Aplicar a paginação na lista ordenada/filtrada
+        sortedEpis = sortedEpis.slice(startIndex, endIndex);
+
         // Filtrar e ordenar a lista com base no critério selecionado
 
         if (currentOrganization === 'az') {
             sortedEpis.sort((a, b) => a.nome_epi.localeCompare(b.nome_epi));
         } else if (currentOrganization === 'za') {
             sortedEpis.sort((a, b) => b.nome_epi.localeCompare(a.nome_epi));
-        } else if (currentOrganization === 'setorAz') {
+        } else if (currentOrganization === 'Validade <') {
             sortedEpis.sort((a, b) => a.validade - b.validade);
-        } else if (currentOrganization === 'setorZa') {
+        } else if (currentOrganization === 'Validade >') {
             sortedEpis.sort((a, b) => b.validade - a.validade);
         }
-
-        // Paginação: calcular índices iniciais e finais
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-
-        // Aplicar a paginação na lista ordenada/filtrada
-        sortedEpis = sortedEpis.slice(startIndex, endIndex);
 
         // Atualizar o estado com os colaboradores filtrados e ordenados
         setEpisLista(sortedEpis);
     };
 
-    const renderizarItem = ({ item }) => {  
-        let validade = route.params.userOnly ? item.validade : `${item.validade} dias`
+    const renderizarItem = ({ item }) => {
+        let validade = route.params.userOnly ? item.data_vencimento : `${item.validade} dias`
 
         if (route.params.userOnly) {
             const dataValidade = new Date(validade); // Converter a string em objeto Date
@@ -124,8 +112,8 @@ const Lista_EPIs = ({ navigation, route }) => {
                     navigation.navigate('ExibirEPI', { epi: item })
                 }
             }} >
-                <Text style={{ textTransform: 'capitalize' }} >{item.nome_epi}</Text>
-                <Text>{validade}</Text>
+                <Text style={{ textTransform: 'capitalize', maxWidth: 200 }} numberOfLines={1} >{item.nome_epi}</Text>
+                <Text numberOfLines={1} style={{ maxWidth: 200 }} >{validade}</Text>
             </TouchableOpacity>
         );
     }
@@ -140,7 +128,19 @@ const Lista_EPIs = ({ navigation, route }) => {
 
     useEffect(() => {
         LoadList();
-    }, [EpisListaTotal, currentPage]);
+    }, [EpisListaTotal, currentPage, currentOrganization]);
+
+    const NextPage = () => {
+        if (EpisListaTotal.length > itemsPerPage) {
+            setCurrentPage(currentPage + 1)
+        }
+    }
+
+    const PrecedingPage = () => {
+        if (currentPage > 0) {
+            setCurrentPage(currentPage - 1)
+        }
+    }
 
     return (
         <ImageBackground
@@ -160,20 +160,19 @@ const Lista_EPIs = ({ navigation, route }) => {
                     selectedValue={currentOrganization}
                     onValueChange={(itemValue, itemIndex) => {
                         setCurrentOrganization(itemValue)
-                        LoadList()
                     }}
                     style={{ flex: 1 }}
                 >
                     <Picker.Item label="A-Z" value="az" />
                     <Picker.Item label="Z-A" value="za" />
-                    <Picker.Item label="Validade > a <" value="setorAz" />
-                    <Picker.Item label="Setor < a >" value="setorZa" />
+                    <Picker.Item label="Validade < a >," value="Validade <" />
+                    <Picker.Item label="Validade > a <" value="Validade >" />
                 </Picker>
             </View>
 
             <View style={styles.container} >
                 <View style={[styles.cell, { borderBottomWidth: 1, borderColor: corSecundaria }]}>
-                    <Text > EPIs {EpisListaTotal.length} </Text>
+                    <Text > {EpisListaTotal.length} Epi{EpisListaTotal.length > 1 ? "s" : null} encontrado{EpisListaTotal.length > 1 ? "s" : null} </Text>
                     {
                         !route.params.userOnly ? (
                             <TouchableOpacity onPress={() => {
@@ -198,11 +197,7 @@ const Lista_EPIs = ({ navigation, route }) => {
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }} >
                     <TouchableOpacity
-                        onPress={() => {
-                            if (currentPage > 1) {
-                                setCurrentPage(currentPage - 1)
-                            }
-                        }}
+                        onPress={PrecedingPage}
                     >
                         <MaterialIcons name="arrow-back-ios" size={35} color={corPrincipal} />
                     </TouchableOpacity>
@@ -215,11 +210,7 @@ const Lista_EPIs = ({ navigation, route }) => {
                         <MaterialIcons name="refresh" size={35} color={corPrincipal} />
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => {
-                            if (EpisLista.length > itemsPerPage) {
-                                setCurrentPage(currentPage + 1)
-                            }
-                        }}
+                        onPress={NextPage}
                     >
                         <MaterialIcons name="arrow-forward-ios" size={35} color={corPrincipal} />
                     </TouchableOpacity>

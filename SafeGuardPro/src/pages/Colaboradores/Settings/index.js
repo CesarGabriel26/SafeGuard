@@ -23,7 +23,7 @@ const Settings = ({ navigation, route }) => {
             <View style={styles.cell}>
                 <View style={{ flexDirection: 'row', width: "100%",justifyContent: 'space-between'}}>
                     <View style={{ flexDirection: 'row' }} >
-                        <Image resizeMode="cover" style={{ width: 50, height: 50, borderRadius: '50%' }} source={{ uri: Pfp }} />
+                        <Image resizeMode="cover" style={{ width: 50, height: 50, borderRadius: 500000 }} source={{ uri: Pfp }} />
                         <View style={[styles.cell2, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
                             <Text>Nome: {route.params.contribuidor.nome}</Text>
                             <Text>Cargo:{route.params.contribuidor.cargo}</Text>

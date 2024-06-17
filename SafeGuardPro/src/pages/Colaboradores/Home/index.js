@@ -14,16 +14,7 @@ const Home = ({ navigation, route }) => {
     const buscarEpis = async () => {
         try {
             const data = await CallBuscaEpiPorColaborador(contribuidor.id);
-            console.log(data);
-            const episDataPromises = data.map(async (epi, i) => {
-                return {
-                    id: epi.id_epi,
-                    nome: epi.Epi,
-                    validade: epi.validade
-                };
-            });
-
-            const episData = await Promise.all(episDataPromises);
+            const episData = await Promise.all(data);
 
             setEpisVeinculados(episData);
         } catch (error) {
@@ -32,12 +23,12 @@ const Home = ({ navigation, route }) => {
     };
 
     const renderizarItemEPI = ({ item }) => {
-
         const hoje = new Date();
-        const validade = new Date(item.validade);
+        const validade = new Date(item.data_vencimento);
         const diferencaEmDias = Math.ceil((validade - hoje) / (1000 * 60 * 60 * 24));
 
         let mensagemValidade;
+
         if (diferencaEmDias <= 0) {
             mensagemValidade = 'Vencido';
         } else if (diferencaEmDias === 1) {
@@ -47,23 +38,17 @@ const Home = ({ navigation, route }) => {
             const diferencaEmAnos = Math.floor(diferencaEmMeses / 12);
 
             if (diferencaEmDias < 30) {
-                mensagemValidade = `Vence em ${diferencaEmDias} dia(s)`;
+                mensagemValidade = `Vence em ${diferencaEmDias} ${(diferencaEmDias > 1) ? "dias" : "dia"}`;
             } else if (diferencaEmMeses < 12) {
-                mensagemValidade = `Vence em ${diferencaEmMeses} mês(meses)`;
+                mensagemValidade = `Vence em ${diferencaEmMeses} ${(diferencaEmMeses > 1) ? "mêses" : "mês"}`;
             } else {
-                if (diferencaEmAnos < 2) {
-                    mensagemValidade = `Vence em ${diferencaEmAnos} ano`;
-                } else {
-                    mensagemValidade = `Vence em ${diferencaEmAnos} anos`;
-                }
+                mensagemValidade = `Vence em ${diferencaEmAnos} ${(diferencaEmAnos > 1) ? "anos" : "ano"}`;
             }
         }
 
-        console.log(item);
-
         return (
             <TouchableOpacity onPress={() => navigation.navigate('ExibirEPI', { epi: item })} style={[styles.cell, styles.cellType2]}>
-                <Text style={styles.nomeEPI}>{item.nome}</Text>
+                <Text style={[styles.nomeEPI, { maxWidth: 100 }]} numberOfLines={1}>{item.nome_epi}</Text>
                 <Text style={styles.validadeEPI}>{mensagemValidade}</Text>
             </TouchableOpacity>
         );
@@ -84,7 +69,7 @@ const Home = ({ navigation, route }) => {
     }
 
     const renderizarItemNotificacao = ({ item }) => {
-        let icon = item.tipo == 'new'? "add-circle" : "warning"
+        let icon = item.tipo == 'new' ? "add-circle" : "warning"
         let color = corPrincipal
 
         return (
@@ -108,16 +93,24 @@ const Home = ({ navigation, route }) => {
         })
     }
 
+    const sendNotification = () => {
+        let notification = notificacoes[notificacoes.length - 1]
+        if (notification) {
+            criarNotificacaoLocal('Atenção', notification["descricao"])
+        }
+    }
+
     useEffect(() => {
         buscarEpis()
         buscarNotificacoes()
         CallCriarNotificacoes()
+        sendNotification()
     }, [])
 
     return (
         <ImageBackground
             source={require('../../../assets/bg.png')}
-            resizeMode="cover"
+            resizeMode="stretch"
             style={meusEstilos.ScreenBody}
         >
             <View style={styles.cell}>

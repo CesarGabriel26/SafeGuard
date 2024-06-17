@@ -4,7 +4,6 @@ import * as Animar from 'react-native-animatable'
 import { corPrincipal, corBranco, corTitulo, meusEstilos, corPreto } from "../../../styles/meusEstilos"
 import { CallBuscaEpi } from "../../../components/api_call";
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
-import Veincular from "../../../components/modal_veincular";
 
 const ExibirEPI = ({ navigation, route }) => {
     const [Nome, setNome] = useState("")
@@ -16,10 +15,9 @@ const ExibirEPI = ({ navigation, route }) => {
     const buscarEPI = async () => {
         try {
             const { epi } = route.params
+            console.log(epi);
 
-            let data = await CallBuscaEpi(epi.id)
-
-            console.log(epi.id, data);
+            let data = await CallBuscaEpi(epi.id_epi)
 
             setNome(data.nome_epi)
             setCategoria(data.categoria)
@@ -43,12 +41,12 @@ const ExibirEPI = ({ navigation, route }) => {
                     <View style={[styles.cell, { flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start' }]}>
                         <View style={styles.cell}>
                             <Text>Nome:</Text>
-                            <Text numberOfLines={1} >{Nome}</Text>
+                            <Text numberOfLines={1} style={{ maxWidth: 100 }} >{Nome}</Text>
                           </View>
 
                         <View style={styles.cell}>
                             <Text>Categoria:</Text>
-                            <Text numberOfLines={1}>{Categoria}</Text>
+                            <Text numberOfLines={1} style={{ maxWidth: 100 }} >{Categoria}</Text>
                         </View>
 
                         <View style={styles.cell}>

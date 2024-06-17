@@ -23,7 +23,7 @@ const Inicio = ({ navigation }) => {
     }, []);
 
     return (
-        <ImageBackground source={require('../../assets/bg.png')} resizeMode="repeat" style={meusEstilos.conteudoHeader}>
+        <ImageBackground source={require('../../assets/bg.png')} resizeMode="contain" style={meusEstilos.conteudoHeader}>
             <View style={styles.logo}>
                 <Animar.Image
                     source={logo}

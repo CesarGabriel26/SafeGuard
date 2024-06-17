@@ -11,12 +11,12 @@ def obterEpiPorColaborador(id_cliente):
     consulta = """
         select 
             Ce.id, 
-            E.nome_epi as Epi,
+            E.nome_epi as nome_epi,
             E.id as id_epi, 
             c.nome as Colaborador, 
             Cs.nome as Administrador, 
-            date_format(Ce.data_EPI, '%d/%m/%y') as data_EPI,
-            date_format(Ce.data_vencimento, '%d/%m/%y') as data_vencimento
+            Ce.data_EPI as data_EPI,
+            Ce.data_vencimento as data_vencimento
         from 
             colaborador_EPIs Ce
         join 
@@ -36,6 +36,40 @@ def obterEpiPorColaborador(id_cliente):
     fechar_conexao(conexao)
     
     return jsonify(dados)
+
+@relation_colab_epi_bp.route('/obterPorNome/<int:id_cliente>/<string:nome>', methods=['GET'])
+def obterEpiPorColaboradorENome(id_cliente, nome):
+    conexao = criar_conexao()
+    cursor = conexao.cursor(dictionary=True)
+    
+    consulta = """
+        select
+            Ce.id, 
+            E.nome_epi as nome_epi, 
+            c.nome as Colaborador, 
+            Cs.nome as Administrador, 
+            Ce.data_EPI as data_EPI,
+            Ce.data_vencimento as data_vencimento
+        from 
+            colaborador_EPIs Ce
+        join 
+            EPIs E on Ce.id_EPIs = E.id
+        join 
+            colaboradores c on Ce.id_colaborador = c.id
+        join 
+            colaboradores Cs on Ce.id_colaborador_supervisor = Cs.id
+        where
+            Ce.id_colaborador = %s;
+    """
+    
+    cursor.execute(consulta, (id_cliente, ))
+    dados = cursor.fetchall()
+    dados_filtrados = [dado for dado in dados if nome.lower() in dado['nome_epi'].lower()]
+    
+    cursor.close()
+    fechar_conexao(conexao)
+    
+    return jsonify(dados_filtrados), 200
 
 @relation_colab_epi_bp.route('/incluir', methods=['POST'])
 def incluirRelacao():

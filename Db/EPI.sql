@@ -11,8 +11,6 @@ create table EPIs(
     foto varchar(1500) not null
 );
 
-drop table colaboradores;
-
 create table colaboradores(
 	id int primary key auto_increment,
     nome varchar(100) not null,
@@ -29,7 +27,6 @@ create table colaboradores(
     estado varchar(50) not null,
     foto varchar(1500) not null
 );
-
 
 create table notificacoes(
 	id int primary key auto_increment,
@@ -49,16 +46,16 @@ create table colaborador_EPIs(
     notificado int
 );
 
--- Inserções
+CREATE TRIGGER `colaboradores_epis_BEFORE_INSERT` BEFORE INSERT ON colaborador_EPIs FOR EACH ROW BEGIN
+declare dias_vencimento int;
+select validade into dias_vencimento from EPIs where id = new.id_EPIs;
+set new.data_vencimento = current_date() + interval dias_vencimento day
+end;
 
-insert into EPIs (nome_epi, validade, descricao, categoria, foto) value ('óculos', 365, 'óculos de proteção que não queima teus olhisnhos', 'Óculos de proteção para risco biológico', 'https://images.tcdn.com.br/img/img_prod/916304/oculos_de_protecao_individual_epi_6921_1_ceac46bb3f7763c1ae802b0a43eaac09.jpg');
+insert into EPIs (nome_epi, validade, descricao, categoria, foto) value ('adadasdadasdadasdsaddsdasd', 365, 'óculos de proteção que não queima teus olhisnhos', 'Óculos de proteção para risco biológico', 'https://images.tcdn.com.br/img/img_prod/916304/oculos_de_protecao_individual_epi_6921_1_ceac46bb3f7763c1ae802b0a43eaac09.jpg');
 
-insert into colaboradores (nome, email, senha, setor, cpf, cargo, cep, endereco, nr, bairro, cidade, estado, foto) value ('Carlos', 'CarlosDaniel@gmail.com', 1234, 'administração', 46832494668, 'diretor', 106220145, 'espiritu santo', 28, 'alvares cabral', 'Andradina', 'SP', 'https://i.imgflip.com/7jv8bd.png?a476688');
+insert into colaboradores (nome, email, senha, setor, cpf, cargo, cep, endereco, nr, bairro, cidade, estado, foto) value ('Carlos', 'CarlosDaniel@safenet.com', 1234, 'administração', 46832494668, 'Colaborador', 106220145, 'espiritu santo', 28, 'alvares cabral', 'Andradina', 'SP', 'https://i.imgflip.com/7jv8bd.png?a476688');
 insert into colaboradores (nome, email, senha, setor, cpf, cargo, cep, endereco, nr, bairro, cidade, estado, foto) value ("Pimentinha", "pimentinha@safenet.com", 1234, "produção", 78952465877, "Administrador", 16900408, "Rua Alagoas", 2587, "Benfica", "Andradina", "SP", 'https://images7.memedroid.com/images/UPLOADED680/5f4c53ee35359.jpeg');
-
-insert into notificacoes (descricao, id_colaboradores, id_epi) value ('Novo EPI veinculado a voce', 2, 1);
-	
-insert into colaborador_EPIs (id_colaborador, id_EPIs, id_colaborador_supervisor, data_EPI, data_vencimento) value (1,3,2, '2010-10-28', '2021-08-03');
 
 -- Visualizar
 
@@ -67,8 +64,8 @@ select
 	E.nome_epi as Epi, 
 	c.nome as Colaborador, 
 	Cs.nome as Administrador, 
-	date_format(Ce.data_EPI, '%d/%m/%y') as data_EPI,
-    date_format(Ce.data_vencimento, '%d/%m/%y') as data_vencimento
+	Ce.data_EPI as data_EPI,
+    Ce.data_vencimento as data_vencimento
 from 
 	colaborador_EPIs Ce
 join 
@@ -96,11 +93,3 @@ select * from notificacoes;
 select * from colaborador_EPIs;
 
 DELETE FROM colaborador_EPIs WHERE id = 2;
-
-DELIMITER //
-CREATE TRIGGER `colaboradores_epis_BEFORE_INSERT` BEFORE INSERT ON colaborador_EPIs FOR EACH ROW BEGIN
-declare dias_vencimento int;
-select validade into dias_vencimento from EPIs where id = new.id_EPIs;
-set new.data_vencimento = current_date() + interval dias_vencimento day;
-end //
-DELIMITER ;

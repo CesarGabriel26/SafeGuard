@@ -293,7 +293,7 @@ const Cadastro = ({ navigation, route }) => {
                         />
                     </View>
 
-                    <Image source={{ uri: foto }} style={{ width: '100%', height: 200 }} />
+                    <Image source={{ uri: foto }} resizeMode="stretch" style={{ width: 200, height: 200 }} />
 
                 </ScrollView>
 

@@ -4,15 +4,12 @@ import * as Animar from 'react-native-animatable'
 import { corPrincipal, corBranco, corTitulo, meusEstilos } from "../../../styles/meusEstilos"
 import { Cadastrar_EditarEpi, CallBuscarColaboradores, CallListColaboradores, DeletarEPI } from "../../../components/api_call";
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
-import Veincular from "../../../components/modal_veincular";
 import { Picker } from '@react-native-picker/picker';
 
 const Cad_EPIs = ({ navigation, route }) => {
-    const [ModalVeincular, setModalVeincular] = useState(false);
-
     const [Id, setId] = useState()
     const [Nome, setNome] = useState("")
-    const [Categoria, setCategoria] = useState("")
+    const [Categoria, setCategoria] = useState("Proteção da cabeça")
     const [Descricao, setDescricao] = useState("")
     const [Foto, setFoto] = useState("https://beautyrepublicfdl.com/wp-content/uploads/2020/06/placeholder-image.jpg")
     const [Validade, setValidade] = useState("0")
@@ -161,7 +158,11 @@ const Cad_EPIs = ({ navigation, route }) => {
                     </TouchableOpacity>
                     {
                         route.params.epi ? (
-                            <TouchableOpacity style={[styles.botao, { backgroundColor: corPrincipal }]} onPress={() => setModalVeincular(true)} >
+                            <TouchableOpacity style={[styles.botao, { backgroundColor: corPrincipal }]} onPress={() => navigation.navigate('VeincularEPI', {
+                                currentUser: route.params.colaborador.id,
+                                IdEpi: Id,
+                                NomeEPI: Nome
+                            })} >
                                 <Text style={[meusEstilos.textoBotao, { color: corBranco }]}> Veincular </Text>
                             </TouchableOpacity>
                         ) : null
@@ -169,9 +170,6 @@ const Cad_EPIs = ({ navigation, route }) => {
                 </View>
 
             </Animar.View>
-
-
-            <Veincular Visibility={ModalVeincular} SetVisibility={setModalVeincular} NomeEPI={Nome} IdEpi={Id} currentUser={route.params.colaborador.id} />
 
         </ImageBackground>
     )

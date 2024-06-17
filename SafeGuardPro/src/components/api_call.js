@@ -165,6 +165,30 @@ async function CallBuscaEpiPorColaborador(id) {
     }
 }
 
+async function CallBuscaEpiPorColaboradorEPorNome(id, nome) {
+
+    try {
+        const resp = await fetch(`${IP}/colab_epi/obterPorNome/${id}/${nome}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        if (!resp.ok) {
+            throw new Error('Erro ao buscar epis');
+        }
+
+        const data = await resp.json();
+
+        return data;
+
+    } catch (error) {
+        console.error('Erro na requisição de Epis:', error);
+        throw error;
+    }
+}
+
+
+
 async function Cadastrar_EditarRelacao(Data) {
     const method = "POST"
     const link = `${IP}/colab_epi/incluir`
@@ -364,6 +388,7 @@ export {
     BuscarEnderecoViaCep,
     Cadastrar_EditarColaborador,
     DeletarColaborador,
+    CallBuscaEpiPorColaboradorEPorNome,
 
     CallGetNotificacoes,
     CallCriarNotificacoes,

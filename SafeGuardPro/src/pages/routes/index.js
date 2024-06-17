@@ -11,6 +11,7 @@ import BottomNav from "../Bottom_Nav";
 import Cad_EPIs from "../EPIs/Cadastrar";
 import Cadastro from "../Colaboradores/Cadastro";
 import ExibirEPI from "../EPIs/Exibir";
+import Veincular from "../EPIs/veincular";
 
 
 const Stack = createNativeStackNavigator()
@@ -34,6 +35,7 @@ const Rotas = () => {
                 {/* Exibirção */}
 
                 <Stack.Screen name="ExibirEPI" component={ExibirEPI} options={{ headerShown : false }} />
+                <Stack.Screen name="VeincularEPI" component={Veincular} options={{ headerShown : false }} />
 
             </Stack.Navigator>
         </NavigationContainer>
